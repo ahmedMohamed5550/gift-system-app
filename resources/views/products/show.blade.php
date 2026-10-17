@@ -166,13 +166,18 @@
 					</div>
 				</div>
 
-				<div class="d-flex justify-content-between p-3 bg-light rounded">
+				<div class="d-flex justify-content-between p-3 bg-light rounded mb-3">
 					<div>
 						<h6 class="text-muted mb-1">حركات المخزون المسجلة</h6>
 						<h4 class="font-weight-bold text-dark mb-0">{{ $product->stockMovements->count() }} حركة</h4>
 					</div>
 					<div class="my-auto">
-						<i class="fas fa-exchange-alt tx-30 text-info"></i>
+						<a href="{{ route('inventory.product-movements', $product) }}" class="btn btn-sm btn-info">
+							<i class="fas fa-history ml-1"></i> عرض السجل
+						</a>
+						<a href="{{ route('inventory.adjustments.create', ['product_id' => $product->id]) }}" class="btn btn-sm btn-primary mr-1">
+							<i class="fas fa-sliders-h ml-1"></i> تسوية المخزون
+						</a>
 					</div>
 				</div>
 

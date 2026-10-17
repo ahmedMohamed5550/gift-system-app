@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubcategoryController;
@@ -38,6 +39,13 @@ Route::middleware(['auth', 'active'])->group(function () {
     // 4. Products Routes
     Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggle-status');
     Route::resource('products', ProductController::class);
+
+    // 5. Inventory & Stock Management Routes
+    Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('inventory/movements', [InventoryController::class, 'movements'])->name('inventory.movements');
+    Route::get('inventory/adjust', [InventoryController::class, 'createAdjustment'])->name('inventory.adjustments.create');
+    Route::post('inventory/adjust', [InventoryController::class, 'storeAdjustment'])->name('inventory.adjustments.store');
+    Route::get('inventory/products/{product}/movements', [InventoryController::class, 'productMovements'])->name('inventory.product-movements');
 });
 
 // Authentication routes (login, logout, password)

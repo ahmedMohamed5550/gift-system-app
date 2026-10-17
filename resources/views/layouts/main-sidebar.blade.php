@@ -11,7 +11,7 @@
 				<div class="app-sidebar__user clearfix">
 					<div class="dropdown user-pro-body">
 						<div class="">
-							<img alt="user-img" class="avatar avatar-xl brround" src="{{URL::asset('assets/img/faces/6.jpg')}}"><span class="avatar-status profile-status bg-green"></span>
+							<img alt="user-img" class="avatar avatar-xl brround" src="{{URL::asset('assets/img/media/Unknown_person.jpg')}}"><span class="avatar-status profile-status bg-green"></span>
 						</div>
 						<div class="user-info">
 							<h4 class="font-weight-semibold mt-3 mb-0">{{ Auth::check() ? Auth::user()->name : 'المستخدم' }}</h4>
@@ -34,12 +34,26 @@
 					<li class="slide {{ request()->routeIs('products.*') ? 'is-expanded active' : '' }}">
 						<a class="side-menu__item {{ request()->routeIs('products.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
 							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3.31 11l2.2 8.01L18.5 19l2.2-8H3.31zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" opacity=".3"/><path d="M22 9h-4.79l-4.38-6.56c-.19-.28-.51-.42-.83-.42s-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1z"/></svg>
-							<span class="side-menu__label">المنتجات والمخزون</span>
+							<span class="side-menu__label">المنتجات</span>
 							<i class="angle fe fe-chevron-down"></i>
 						</a>
 						<ul class="slide-menu">
 							<li><a class="slide-item {{ request()->routeIs('products.index') ? 'active' : '' }}" href="{{ route('products.index') }}">سجل المنتجات</a></li>
 							<li><a class="slide-item {{ request()->routeIs('products.create') ? 'active' : '' }}" href="{{ route('products.create') }}">إضافة منتج جديد</a></li>
+						</ul>
+					</li>
+
+					<!-- Inventory & Stock Management -->
+					<li class="slide {{ request()->routeIs('inventory.*') ? 'is-expanded active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('inventory.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 4h16v4H4z" opacity=".3"/><path d="M20 2H4c-1.1 0-2 .9-2 2v4c0 .8.5 1.5 1.2 1.8V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9.8c.7-.3 1.2-1 1.2-1.8V4c0-1.1-.9-2-2-2zm0 6H4V4h16v4zm-2 11H6V10h12v9zm-7-7h2v5h-2z"/></svg>
+							<span class="side-menu__label">المخزون والجرد</span>
+							<i class="angle fe fe-chevron-down"></i>
+						</a>
+						<ul class="slide-menu">
+							<li><a class="slide-item {{ request()->routeIs('inventory.index') ? 'active' : '' }}" href="{{ route('inventory.index') }}">مراقبة المخزون والنواقص</a></li>
+							<li><a class="slide-item {{ request()->routeIs('inventory.movements') ? 'active' : '' }}" href="{{ route('inventory.movements') }}">سجل حركات المخزون</a></li>
+							<li><a class="slide-item {{ request()->routeIs('inventory.adjustments.create') ? 'active' : '' }}" href="{{ route('inventory.adjustments.create') }}">تسوية جردية جديدة</a></li>
 						</ul>
 					</li>
 

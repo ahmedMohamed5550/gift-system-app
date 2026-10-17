@@ -59,6 +59,16 @@ class Product extends Model
         return $query->whereColumn('stock_quantity', '<=', 'minimum_stock');
     }
 
+    public function scopeOutOfStock(Builder $query): Builder
+    {
+        return $query->where('stock_quantity', '<=', 0);
+    }
+
+    public function scopeInStock(Builder $query): Builder
+    {
+        return $query->where('stock_quantity', '>', 0);
+    }
+
     public function getProfitAttribute(): float
     {
         return (float) ($this->selling_price - $this->purchase_price);
@@ -76,5 +86,46 @@ class Product extends Model
     public function getIsLowStockAttribute(): bool
     {
         return (float) $this->stock_quantity <= (float) $this->minimum_stock;
+    }
+
+    public function getIsOutOfStockAttribute(): bool
+    {
+        return (float) $this->stock_quantity <= 0;
+    }
+
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->is_out_of_stock) {
+            return 'out_of_stock';
+        }
+
+        if ($this->is_low_stock) {
+            return 'low_stock';
+        }
+
+        return 'in_stock';
+    }
+
+    public function getStockStatusBadgeAttribute(): string
+    {
+        return match ($this->stock_status) {
+            'out_of_stock' => 'badge-danger',
+            'low_stock' => 'badge-warning',
+            default => 'badge-success',
+        };
+    }
+
+    public function getStockStatusLabelAttribute(): string
+    {
+        return match ($this->stock_status) {
+            'out_of_stock' => 'نفذ من المخزون',
+            'low_stock' => 'مخزون منخفض',
+            default => 'متوفر',
+        };
+    }
+
+    public function getTotalStockValueAttribute(): float
+    {
+        return (float) ($this->stock_quantity * $this->purchase_price);
     }
 }
