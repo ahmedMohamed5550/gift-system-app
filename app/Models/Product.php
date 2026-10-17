@@ -58,4 +58,23 @@ class Product extends Model
     {
         return $query->whereColumn('stock_quantity', '<=', 'minimum_stock');
     }
+
+    public function getProfitAttribute(): float
+    {
+        return (float) ($this->selling_price - $this->purchase_price);
+    }
+
+    public function getProfitMarginPercentageAttribute(): float
+    {
+        if ((float) $this->purchase_price > 0) {
+            return round((( (float)$this->selling_price - (float)$this->purchase_price ) / (float)$this->purchase_price) * 100, 1);
+        }
+
+        return 0.0;
+    }
+
+    public function getIsLowStockAttribute(): bool
+    {
+        return (float) $this->stock_quantity <= (float) $this->minimum_stock;
+    }
 }
