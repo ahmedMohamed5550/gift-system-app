@@ -35,6 +35,30 @@ class User extends Authenticatable
         ];
     }
 
+    public function isOwner(): bool
+    {
+        return $this->role === 'owner';
+    }
+
+    public function isEmployee(): bool
+    {
+        return $this->role === 'employee';
+    }
+
+    public function isActive(): bool
+    {
+        return (bool) $this->is_active;
+    }
+
+    public function getRoleArabicAttribute(): string
+    {
+        return match ($this->role) {
+            'owner' => 'مالك المتجر',
+            'employee' => 'موظف مبيعات',
+            default => $this->role,
+        };
+    }
+
     public function shifts(): HasMany
     {
         return $this->hasMany(Shift::class);

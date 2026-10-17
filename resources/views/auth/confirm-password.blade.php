@@ -1,27 +1,52 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
+@extends('layouts.master2')
 
-    <form method="POST" action="{{ route('password.confirm') }}">
-        @csrf
+@section('title', 'تأكيد كلمة المرور - نظام إدارة متجر الهدايا')
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
+@section('css')
+<link href="{{ URL::asset('assets/plugins/sidemenu-responsive-tabs/css/sidemenu-responsive-tabs.css') }}" rel="stylesheet">
+@endsection
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+@section('content')
+<div class="container-fluid">
+	<div class="row no-gutter justify-content-center">
+		<div class="col-md-6 col-lg-5 col-xl-4 bg-white my-5 p-4 rounded shadow-sm">
+			<div class="main-signup-header text-right">
+				<div class="text-center mb-4">
+					<img src="{{ URL::asset('assets/img/brand/favicon.png') }}" class="ht-40 mb-2" alt="متجر الهدايا">
+					<h3 class="text-primary font-weight-bold">منطقة آمنة</h3>
+					<p class="text-muted tx-14">يرجى تأكيد كلمة المرور الخاصة بك للمتابعة.</p>
+				</div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+				<form method="POST" action="{{ route('password.confirm') }}">
+					@csrf
 
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+					<div class="form-group text-right">
+						<label for="password" class="font-weight-semibold">كلمة المرور</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text"><i class="fas fa-lock text-muted"></i></span>
+							</div>
+							<input id="password"
+								   type="password"
+								   name="password"
+								   class="form-control @error('password') is-invalid @enderror"
+								   placeholder="أدخل كلمة المرور"
+								   required
+								   autocomplete="current-password">
+						</div>
+						@error('password')
+							<span class="invalid-feedback d-block text-right mt-1" role="alert">
+								<strong>{{ $message }}</strong>
+							</span>
+						@enderror
+					</div>
+
+					<button type="submit" class="btn btn-main-primary btn-block font-weight-bold py-2 mt-4">
+						<i class="fas fa-check-circle ml-1"></i> تأكيد
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+@endsection
