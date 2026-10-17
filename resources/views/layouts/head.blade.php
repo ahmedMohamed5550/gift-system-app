@@ -1,7 +1,7 @@
 <!-- Title -->
-<title> @yield('title', 'نظام إدارة متجر الهدايا - Gift Shop POS') </title>
+<title> @yield('title', 'نظام إدارة متجر بيت الهدايا - Gift House') </title>
 <!-- Favicon -->
-<link rel="icon" href="{{URL::asset('assets/img/brand/favicon.png')}}" type="image/x-icon"/>
+<link rel="icon" href="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" type="image/x-icon"/>
 <!-- Icons css -->
 <link href="{{URL::asset('assets/css/icons.css')}}" rel="stylesheet">
 <!--  Custom Scroll bar-->

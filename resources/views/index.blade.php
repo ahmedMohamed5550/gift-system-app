@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'لوحة التحكم - نظام إدارة متجر الهدايا')
+@section('title', 'لوحة التحكم - نظام إدارة متجر بيت الهدايا')
 
 @section('css')
 <!--  Owl-carousel css-->
@@ -14,7 +14,7 @@
 					<div class="left-content">
 						<div>
 						  <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">مرحباً بك مجدداً، {{ Auth::check() ? Auth::user()->name : '' }}!</h2>
-						  <p class="mg-b-0 text-muted">لوحة متابعة المبيعات ونقطة البيع - متجر الهدايا.</p>
+						  <p class="mg-b-0 text-muted">لوحة متابعة المبيعات - متجر بيت الهدايا.</p>
 						</div>
 					</div>
 					<div class="main-dashboard-header-right">
@@ -462,5 +462,5 @@
 <script src="{{URL::asset('assets/js/modal-popup.js')}}"></script>
 <!--Internal  index js -->
 <script src="{{URL::asset('assets/js/index.js')}}"></script>
-<script src="{{URL::asset('assets/js/jquery.vmap.sampledata.js')}}"></script>	
+<script src="{{URL::asset('assets/js/jquery.vmap.sampledata.js')}}"></script>
 @endsection

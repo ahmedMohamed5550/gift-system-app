@@ -204,14 +204,14 @@
 								<div class="dropdown-menu">
 									<div class="main-header-profile bg-primary p-3">
 										<div class="d-flex wd-100p">
-											<div class="main-img-user"><img alt="" src="{{URL::asset('assets/img/faces/6.jpg')}}" class=""></div>
+											<div class="main-img-user"><img alt="" src="{{URL::asset('assets/img/media/Unknown_person.jpg')}}" class=""></div>
 											<div class="mr-3 my-auto">
 												<h6>{{ Auth::check() ? Auth::user()->name : 'المستخدم' }}</h6>
 												<span>{{ Auth::check() ? Auth::user()->role_arabic : '' }}</span>
 											</div>
 										</div>
 									</div>
-									<a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bx bx-user-circle"></i> الملف الشخصي</a>
+									{{-- <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bx bx-user-circle"></i> الملف الشخصي</a> --}}
 									<a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bx bx-cog"></i> إعدادات الحساب</a>
 									<form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
 										@csrf

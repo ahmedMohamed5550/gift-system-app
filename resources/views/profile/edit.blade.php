@@ -22,7 +22,7 @@
 		<div class="card mg-b-20">
 			<div class="card-body text-center">
 				<div class="mb-3">
-					<img alt="avatar" class="rounded-circle avatar-xxl" src="{{ URL::asset('assets/img/faces/6.jpg') }}">
+					<img alt="avatar" class="rounded-circle avatar-xxl" src="{{URL::asset('assets/img/media/Unknown_person.jpg')}}">
 				</div>
 				<h5 class="font-weight-bold mb-1">{{ $user->name }}</h5>
 				<p class="text-muted mb-2">{{ '@' . $user->username }}</p>
