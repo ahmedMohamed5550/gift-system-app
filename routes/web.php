@@ -4,8 +4,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserController;
@@ -60,6 +62,16 @@ Route::middleware(['auth', 'active'])->group(function () {
     // 7. Expense Management Routes
     Route::patch('expenses/{expense}/cancel', [ExpenseController::class, 'cancel'])->name('expenses.cancel');
     Route::resource('expenses', ExpenseController::class);
+
+    // 8. POS & Sales Management Routes
+    Route::get('pos', [PosController::class, 'index'])->name('pos.index');
+    Route::post('pos/checkout', [PosController::class, 'store'])->name('pos.checkout');
+    Route::get('pos/search-products', [PosController::class, 'search'])->name('pos.search');
+
+    Route::get('sales', [SaleController::class, 'index'])->name('sales.index');
+    Route::get('sales/{sale}/print', [SaleController::class, 'print'])->name('sales.print');
+    Route::patch('sales/{sale}/cancel', [SaleController::class, 'cancel'])->name('sales.cancel');
+    Route::get('sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
 });
 
 // Authentication routes (login, logout, password)

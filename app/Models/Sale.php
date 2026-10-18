@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentMethod;
+use App\Enums\SaleStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -46,5 +48,52 @@ class Sale extends Model
     public function returns(): HasMany
     {
         return $this->hasMany(SaleReturn::class);
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class, 'subject_id')->where('subject_type', self::class);
+    }
+
+    // --- Helper Methods & Accessors ---
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'completed';
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return match ($this->payment_method) {
+            'cash' => 'نقداً (كاش)',
+            'vodafone_cash' => 'فودافون كاش',
+            'instapay' => 'انستا باي',
+            default => $this->payment_method ?? '-',
+        };
+    }
+
+    public function getPaymentMethodBadgeClassAttribute(): string
+    {
+        return match ($this->payment_method) {
+            'cash' => 'badge-success',
+            'vodafone_cash' => 'badge-danger',
+            'instapay' => 'badge-primary',
+            default => 'badge-secondary',
+        };
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return $this->status === 'completed' ? 'مكتملة' : 'ملغاة';
+    }
+
+    public function getStatusBadgeClassAttribute(): string
+    {
+        return $this->status === 'completed' ? 'badge-success' : 'badge-danger';
     }
 }

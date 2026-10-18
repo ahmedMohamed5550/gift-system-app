@@ -41,4 +41,9 @@ class SaleItem extends Model
     {
         return $this->hasMany(ReturnItem::class);
     }
+
+    public function getProfitAttribute(): float
+    {
+        return (float) round((($this->unit_price - $this->unit_cost) * $this->quantity), 2);
+    }
 }

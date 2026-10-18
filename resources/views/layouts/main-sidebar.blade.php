@@ -98,6 +98,28 @@
 
 					<li class="side-item side-item-category">المبيعات والمالية</li>
 
+					<!-- POS Terminal -->
+					<li class="slide {{ request()->routeIs('pos.*') ? 'active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('pos.*') ? 'active' : '' }}" href="{{ route('pos.index') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 17h16v2H4z" opacity=".3"/><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 15H4v-2h16v2zm0-5H4V8h16v6z"/></svg>
+							<span class="side-menu__label">نقطة البيع</span>
+							<span class="badge badge-success side-badge">كاشير</span>
+						</a>
+					</li>
+
+					<!-- Sales & Invoices -->
+					<li class="slide {{ request()->routeIs('sales.*') ? 'is-expanded active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('sales.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 15h10v2H7zm0-4h10v2H7zm0-4h10v2H7z" opacity=".3"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+							<span class="side-menu__label">فواتير المبيعات</span>
+							<i class="angle fe fe-chevron-down"></i>
+						</a>
+						<ul class="slide-menu">
+							<li><a class="slide-item {{ request()->routeIs('sales.index') ? 'active' : '' }}" href="{{ route('sales.index') }}">سجل الفواتير</a></li>
+							<li><a class="slide-item" href="{{ route('pos.index') }}">فاتورة بيع جديدة</a></li>
+						</ul>
+					</li>
+
 					<!-- Shifts & Cash Reconciliation -->
 					<li class="slide {{ request()->routeIs('shifts.*') ? 'is-expanded active' : '' }}">
 						<a class="side-menu__item {{ request()->routeIs('shifts.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
