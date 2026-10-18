@@ -208,7 +208,7 @@
 							<td>{{ $movement->id }}</td>
 							<td class="tx-12 text-muted font-weight-semibold">
 								<i class="far fa-clock ml-1"></i>
-								{{ $movement->created_at ? $movement->created_at->format('Y-m-d H:i') : '-' }}
+								{{ $movement->created_at ? $movement->created_at->translatedFormat('Y-m-d h:i A') : '-' }}
 							</td>
 							<td class="text-right font-weight-bold">
 								@if($movement->product)

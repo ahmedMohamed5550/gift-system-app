@@ -108,7 +108,7 @@
 				<div class="pb-0 mt-0">
 					<div class="d-flex">
 						<div>
-							<h4 class="tx-18 font-weight-bold mb-1 text-white">{{ number_format($stats['inventory_value'], 2) }} ر.س</h4>
+							<h4 class="tx-18 font-weight-bold mb-1 text-white">{{ number_format($stats['inventory_value'], 2) }} جنيه مصري</h4>
 						</div>
 						<span class="float-right my-auto mr-auto">
 							<i class="fas fa-coins text-white tx-24"></i>
@@ -227,11 +227,11 @@
 									<span class="text-muted">-</span>
 								@endif
 							</td>
-							<td class="text-right font-weight-bold text-muted">{{ number_format($product->purchase_price, 2) }} ر.س</td>
-							<td class="text-right font-weight-bold text-success">{{ number_format($product->selling_price, 2) }} ر.س</td>
+							<td class="text-right font-weight-bold text-muted">{{ number_format($product->purchase_price, 2) }} جنيه مصري</td>
+							<td class="text-right font-weight-bold text-success">{{ number_format($product->selling_price, 2) }} جنيه مصري</td>
 							<td class="text-center">
 								<span class="badge badge-pill {{ $product->profit >= 0 ? 'badge-success-light' : 'badge-danger-light' }} font-weight-bold">
-									+{{ number_format($product->profit, 2) }} ر.س
+									+{{ number_format($product->profit, 2) }} جنيه مصري
 									({{ $product->profit_margin_percentage }}%)
 								</span>
 							</td>

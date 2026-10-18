@@ -85,7 +85,7 @@
 										   class="form-control text-left @error('purchase_price') is-invalid @enderror"
 										   required>
 									<div class="input-group-append">
-										<span class="input-group-text">ر.س</span>
+										<span class="input-group-text">جنيه مصري</span>
 									</div>
 								</div>
 								@error('purchase_price')
@@ -108,7 +108,7 @@
 										   class="form-control text-left @error('selling_price') is-invalid @enderror"
 										   required>
 									<div class="input-group-append">
-										<span class="input-group-text">ر.س</span>
+										<span class="input-group-text">جنيه مصري</span>
 									</div>
 								</div>
 								@error('selling_price')

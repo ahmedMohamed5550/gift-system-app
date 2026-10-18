@@ -96,6 +96,34 @@
 						</ul>
 					</li>
 
+					<li class="side-item side-item-category">المبيعات والمالية</li>
+
+					<!-- Shifts & Cash Reconciliation -->
+					<li class="slide {{ request()->routeIs('shifts.*') ? 'is-expanded active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('shifts.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.25 12.15L11 13V7h1.5v5.25l4.5 2.67-.75 1.23z" opacity=".3"/><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+							<span class="side-menu__label">الورديات والخزينة</span>
+							<i class="angle fe fe-chevron-down"></i>
+						</a>
+						<ul class="slide-menu">
+							<li><a class="slide-item {{ request()->routeIs('shifts.current') ? 'active' : '' }}" href="{{ route('shifts.current') }}">الوردية الحالية</a></li>
+							<li><a class="slide-item {{ request()->routeIs('shifts.index') ? 'active' : '' }}" href="{{ route('shifts.index') }}">سجل الورديات والتسويات</a></li>
+						</ul>
+					</li>
+
+					<!-- Expenses Management -->
+					<li class="slide {{ request()->routeIs('expenses.*') ? 'is-expanded active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('expenses.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 6h16v12H4z" opacity=".3"/><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12zm-6-7h-4v2h4v-2z"/></svg>
+							<span class="side-menu__label">المصروفات</span>
+							<i class="angle fe fe-chevron-down"></i>
+						</a>
+						<ul class="slide-menu">
+							<li><a class="slide-item {{ request()->routeIs('expenses.index') ? 'active' : '' }}" href="{{ route('expenses.index') }}">قائمة المصروفات</a></li>
+							<li><a class="slide-item {{ request()->routeIs('expenses.create') ? 'active' : '' }}" href="{{ route('expenses.create') }}">تسجيل مصروف جديد</a></li>
+						</ul>
+					</li>
+
 					<li class="side-item side-item-category">قوالب وإضافات المتجر</li>
 					<li class="slide">
 						<a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 12c0 4.08 3.06 7.44 7 7.93V4.07C7.05 4.56 4 7.92 4 12z" opacity=".3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z"/></svg><span class="side-menu__label">Apps</span><i class="angle fe fe-chevron-down"></i></a>

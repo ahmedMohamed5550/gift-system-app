@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +48,18 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('inventory/adjust', [InventoryController::class, 'createAdjustment'])->name('inventory.adjustments.create');
     Route::post('inventory/adjust', [InventoryController::class, 'storeAdjustment'])->name('inventory.adjustments.store');
     Route::get('inventory/products/{product}/movements', [InventoryController::class, 'productMovements'])->name('inventory.product-movements');
+
+    // 6. Shift Management Routes
+    Route::get('shifts', [ShiftController::class, 'index'])->name('shifts.index');
+    Route::get('shifts/current', [ShiftController::class, 'current'])->name('shifts.current');
+    Route::post('shifts/open', [ShiftController::class, 'open'])->name('shifts.open');
+    Route::post('shifts/{shift}/close', [ShiftController::class, 'close'])->name('shifts.close');
+    Route::get('shifts/{shift}/print', [ShiftController::class, 'print'])->name('shifts.print');
+    Route::get('shifts/{shift}', [ShiftController::class, 'show'])->name('shifts.show');
+
+    // 7. Expense Management Routes
+    Route::patch('expenses/{expense}/cancel', [ExpenseController::class, 'cancel'])->name('expenses.cancel');
+    Route::resource('expenses', ExpenseController::class);
 });
 
 // Authentication routes (login, logout, password)

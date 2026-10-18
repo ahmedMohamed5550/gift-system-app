@@ -142,7 +142,7 @@
 							<td>{{ $movement->id }}</td>
 							<td class="tx-12 text-muted font-weight-semibold">
 								<i class="far fa-clock ml-1"></i>
-								{{ $movement->created_at ? $movement->created_at->format('Y-m-d H:i') : '-' }}
+								{{ $movement->created_at ? $movement->created_at->translatedFormat('Y-m-d h:i A') : '-' }}
 							</td>
 							<td>
 								<span class="badge {{ $movement->reference_type_badge_class }} px-2 py-1">

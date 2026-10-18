@@ -77,7 +77,7 @@
 		<div class="card bg-gray-100">
 			<div class="card-body">
 				<span class="tx-13 text-muted d-block mb-1">سعر الشراء (التكلفة)</span>
-				<h4 class="font-weight-bold text-dark mb-0">{{ number_format($product->purchase_price, 2) }} <span class="tx-14 font-weight-normal text-muted">ر.س</span></h4>
+				<h4 class="font-weight-bold text-dark mb-0">{{ number_format($product->purchase_price, 2) }} <span class="tx-14 font-weight-normal text-muted">جنيه مصري</span></h4>
 			</div>
 		</div>
 	</div>
@@ -86,7 +86,7 @@
 		<div class="card bg-success-transparent border-success">
 			<div class="card-body">
 				<span class="tx-13 text-success d-block mb-1 font-weight-semibold">سعر البيع للجمهور</span>
-				<h4 class="font-weight-bold text-success mb-0">{{ number_format($product->selling_price, 2) }} <span class="tx-14 font-weight-normal">ر.س</span></h4>
+				<h4 class="font-weight-bold text-success mb-0">{{ number_format($product->selling_price, 2) }} <span class="tx-14 font-weight-normal">جنيه مصري</span></h4>
 			</div>
 		</div>
 	</div>
@@ -95,7 +95,7 @@
 		<div class="card bg-primary-transparent border-primary">
 			<div class="card-body">
 				<span class="tx-13 text-primary d-block mb-1 font-weight-semibold">هامش الربح المتوقع للقطعة</span>
-				<h4 class="font-weight-bold text-primary mb-0">+{{ number_format($product->profit, 2) }} <span class="tx-14 font-weight-normal">ر.س ({{ $product->profit_margin_percentage }}%)</span></h4>
+				<h4 class="font-weight-bold text-primary mb-0">+{{ number_format($product->profit, 2) }} <span class="tx-14 font-weight-normal">جنيه مصري ({{ $product->profit_margin_percentage }}%)</span></h4>
 			</div>
 		</div>
 	</div>
@@ -104,7 +104,7 @@
 		<div class="card bg-info-transparent border-info">
 			<div class="card-body">
 				<span class="tx-13 text-info d-block mb-1 font-weight-semibold">القيمة الإجمالية للمخزون الحالي</span>
-				<h4 class="font-weight-bold text-info mb-0">{{ number_format($product->stock_quantity * $product->purchase_price, 2) }} <span class="tx-14 font-weight-normal">ر.س</span></h4>
+				<h4 class="font-weight-bold text-info mb-0">{{ number_format($product->stock_quantity * $product->purchase_price, 2) }} <span class="tx-14 font-weight-normal">جنيه مصري</span></h4>
 			</div>
 		</div>
 	</div>
