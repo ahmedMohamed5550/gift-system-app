@@ -159,6 +159,28 @@
 						</ul>
 					</li>
 
+					<!-- Reports & Analytics -->
+					<li class="side-item side-item-category">التقارير والتحليلات</li>
+					<li class="slide {{ request()->routeIs('reports.*') ? 'is-expanded active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('reports.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M5 19h14V5H5v14zm10-7h2v5h-2v-5zm-4-3h2v8h-2V9zm-4 6h2v2H7v-2z" opacity=".3"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 15h2v2H7zm4-6h2v8h-2zm4 3h2v5h-2z"/></svg>
+							<span class="side-menu__label">تقارير النظام</span>
+							<i class="angle fe fe-chevron-down"></i>
+						</a>
+						<ul class="slide-menu">
+							<li><a class="slide-item {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">مركز التقارير العام</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.sales') ? 'active' : '' }}" href="{{ route('reports.sales') }}">تقرير المبيعات</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.payment-methods') ? 'active' : '' }}" href="{{ route('reports.payment-methods') }}">المبيعات حسب طرق الدفع</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.products') ? 'active' : '' }}" href="{{ route('reports.products') }}">تقرير مبيعات المنتجات</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.employees') ? 'active' : '' }}" href="{{ route('reports.employees') }}">تقرير مبيعات الموظفين</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.shifts') ? 'active' : '' }}" href="{{ route('reports.shifts') }}">تقرير الورديات والتسويات</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.expenses') ? 'active' : '' }}" href="{{ route('reports.expenses') }}">تقرير المصروفات</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.inventory') ? 'active' : '' }}" href="{{ route('reports.inventory') }}">تقرير حركة المخزون</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.low-stock') ? 'active' : '' }}" href="{{ route('reports.low-stock') }}">تقرير النواقص والحد الأدنى</a></li>
+							<li><a class="slide-item {{ request()->routeIs('reports.profit') ? 'active' : '' }}" href="{{ route('reports.profit') }}">تقرير الأرباح والخسائر</a></li>
+						</ul>
+					</li>
+
 					<li class="side-item side-item-category">قوالب وإضافات المتجر</li>
 					<li class="slide">
 						<a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 12c0 4.08 3.06 7.44 7 7.93V4.07C7.05 4.56 4 7.92 4 12z" opacity=".3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z"/></svg><span class="side-menu__label">Apps</span><i class="angle fe fe-chevron-down"></i></a>

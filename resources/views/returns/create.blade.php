@@ -230,9 +230,7 @@
 													<div class="font-weight-bold text-dark">
 														{{ $item->product?->name ?? 'منتج غير معروف' }}
 													</div>
-													@if($item->product?->code)
-														<span class="tx-11 text-muted">الكود: {{ $item->product->code }}</span>
-													@endif
+													<span class="tx-11 text-muted">#{{ $item->product_id }}</span>
 												</td>
 												<td class="font-weight-semibold">
 													{{ number_format($item->unit_price, 2) }} جنيه

@@ -122,7 +122,7 @@ class ReturnController extends Controller
                     'sale_item_id' => $item->id,
                     'product_id' => $item->product_id,
                     'product_name' => $item->product?->name ?? 'منتج غير معروف',
-                    'product_code' => $item->product?->code ?? '-',
+                    'product_code' => '#' . $item->product_id,
                     'unit_price' => (float) $item->unit_price,
                     'original_quantity' => (float) $item->quantity,
                     'returned_quantity' => (float) $item->returned_quantity_calculated,

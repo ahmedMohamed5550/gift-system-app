@@ -2,465 +2,614 @@
 
 @section('title', 'لوحة التحكم - نظام إدارة متجر بيت الهدايا')
 
-@section('css')
-<!--  Owl-carousel css-->
-<link href="{{URL::asset('assets/plugins/owl-carousel/owl.carousel.css')}}" rel="stylesheet" />
-<!-- Maps css -->
-<link href="{{URL::asset('assets/plugins/jqvmap/jqvmap.min.css')}}" rel="stylesheet">
-@endsection
 @section('page-header')
-				<!-- breadcrumb -->
-				<div class="breadcrumb-header justify-content-between">
-					<div class="left-content">
-						<div>
-						  <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">مرحباً بك مجدداً، {{ Auth::check() ? Auth::user()->name : '' }}!</h2>
-						  <p class="mg-b-0 text-muted">لوحة متابعة المبيعات - متجر بيت الهدايا.</p>
-						</div>
-					</div>
-					<div class="main-dashboard-header-right">
-						<div>
-							<label class="tx-13">Customer Ratings</label>
-							<div class="main-star">
-								<i class="typcn typcn-star active"></i> <i class="typcn typcn-star active"></i> <i class="typcn typcn-star active"></i> <i class="typcn typcn-star active"></i> <i class="typcn typcn-star"></i> <span>(14,873)</span>
-							</div>
-						</div>
-						<div>
-							<label class="tx-13">Online Sales</label>
-							<h5>563,275</h5>
-						</div>
-						<div>
-							<label class="tx-13">Offline Sales</label>
-							<h5>783,675</h5>
-						</div>
-					</div>
+<div class="breadcrumb-header justify-content-between mb-3">
+	<div class="my-auto">
+		<div class="d-flex align-items-center">
+			<h4 class="content-title mb-0 my-auto text-primary">
+				<i class="fas fa-tachometer-alt ml-2"></i>لوحة التحكم والمؤشرات
+			</h4>
+			<span class="text-muted mt-1 tx-13 mr-2 mb-0">/ مرحباً بك، {{ Auth::check() ? Auth::user()->name : '' }} ({{ Auth::check() ? Auth::user()->role_arabic : '' }})</span>
+		</div>
+	</div>
+
+	<!-- Period Selector Filter -->
+	<div class="d-flex my-xl-auto right-content align-items-center" style="gap: 8px;">
+		<form method="GET" action="{{ route('dashboard') }}" class="d-flex align-items-center" id="dashboardFilterForm">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-primary"></i></span>
 				</div>
-				<!-- /breadcrumb -->
+				<select name="period" class="form-control font-weight-bold" onchange="this.form.submit()">
+					<option value="today" {{ $currentPeriod == 'today' ? 'selected' : '' }}>اليوم ({{ now()->format('Y-m-d') }})</option>
+					<option value="yesterday" {{ $currentPeriod == 'yesterday' ? 'selected' : '' }}>أمس</option>
+					<option value="this_week" {{ $currentPeriod == 'this_week' ? 'selected' : '' }}>الأسبوع الحالي</option>
+					<option value="this_month" {{ $currentPeriod == 'this_month' ? 'selected' : '' }}>الشهر الحالي</option>
+					<option value="last_month" {{ $currentPeriod == 'last_month' ? 'selected' : '' }}>الشهر الماضي</option>
+					<option value="this_year" {{ $currentPeriod == 'this_year' ? 'selected' : '' }}>العام الحالي</option>
+				</select>
+			</div>
+		</form>
+		<a href="{{ route('pos.index') }}" class="btn btn-success font-weight-bold shadow-sm">
+			<i class="fas fa-cash-register ml-1"></i> نقطة البيع
+		</a>
+		<a href="{{ route('reports.index') }}" class="btn btn-outline-primary font-weight-bold">
+			<i class="fas fa-chart-line ml-1"></i> التقارير التفصيلية
+		</a>
+	</div>
+</div>
 @endsection
+
 @section('content')
-				<!-- row -->
-				<div class="row row-sm">
-					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
-						<div class="card overflow-hidden sales-card bg-primary-gradient">
-							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
-								<div class="">
-									<h6 class="mb-3 tx-12 text-white">TODAY ORDERS</h6>
-								</div>
-								<div class="pb-0 mt-0">
-									<div class="d-flex">
-										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">$5,74.12</h4>
-											<p class="mb-0 tx-12 text-white op-7">Compared to last week</p>
-										</div>
-										<span class="float-right my-auto mr-auto">
-											<i class="fas fa-arrow-circle-up text-white"></i>
-											<span class="text-white op-7"> +427</span>
-										</span>
-									</div>
-								</div>
-							</div>
-							<span id="compositeline" class="pt-1">5,9,5,6,4,12,18,14,10,15,12,5,8,5,12,5,12,10,16,12</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
-						<div class="card overflow-hidden sales-card bg-danger-gradient">
-							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
-								<div class="">
-									<h6 class="mb-3 tx-12 text-white">TODAY EARNINGS</h6>
-								</div>
-								<div class="pb-0 mt-0">
-									<div class="d-flex">
-										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">$1,230.17</h4>
-											<p class="mb-0 tx-12 text-white op-7">Compared to last week</p>
-										</div>
-										<span class="float-right my-auto mr-auto">
-											<i class="fas fa-arrow-circle-down text-white"></i>
-											<span class="text-white op-7"> -23.09%</span>
-										</span>
-									</div>
-								</div>
-							</div>
-							<span id="compositeline2" class="pt-1">3,2,4,6,12,14,8,7,14,16,12,7,8,4,3,2,2,5,6,7</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
-						<div class="card overflow-hidden sales-card bg-success-gradient">
-							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
-								<div class="">
-									<h6 class="mb-3 tx-12 text-white">TOTAL EARNINGS</h6>
-								</div>
-								<div class="pb-0 mt-0">
-									<div class="d-flex">
-										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">$7,125.70</h4>
-											<p class="mb-0 tx-12 text-white op-7">Compared to last week</p>
-										</div>
-										<span class="float-right my-auto mr-auto">
-											<i class="fas fa-arrow-circle-up text-white"></i>
-											<span class="text-white op-7"> 52.09%</span>
-										</span>
-									</div>
-								</div>
-							</div>
-							<span id="compositeline3" class="pt-1">5,10,5,20,22,12,15,18,20,15,8,12,22,5,10,12,22,15,16,10</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
-						<div class="card overflow-hidden sales-card bg-warning-gradient">
-							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
-								<div class="">
-									<h6 class="mb-3 tx-12 text-white">PRODUCT SOLD</h6>
-								</div>
-								<div class="pb-0 mt-0">
-									<div class="d-flex">
-										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">$4,820.50</h4>
-											<p class="mb-0 tx-12 text-white op-7">Compared to last week</p>
-										</div>
-										<span class="float-right my-auto mr-auto">
-											<i class="fas fa-arrow-circle-down text-white"></i>
-											<span class="text-white op-7"> -152.3</span>
-										</span>
-									</div>
-								</div>
-							</div>
-							<span id="compositeline4" class="pt-1">5,9,5,6,4,12,18,14,10,15,12,5,8,5,12,5,12,10,16,12</span>
-						</div>
-					</div>
-				</div>
-				<!-- row closed -->
 
-				<!-- row opened -->
-				<div class="row row-sm">
-					<div class="col-md-12 col-lg-12 col-xl-7">
-						<div class="card">
-							<div class="card-header bg-transparent pd-b-0 pd-t-20 bd-b-0">
-								<div class="d-flex justify-content-between">
-									<h4 class="card-title mb-0">Order status</h4>
-									<i class="mdi mdi-dots-horizontal text-gray"></i>
-								</div>
-								<p class="tx-12 text-muted mb-0">Order Status and Tracking. Track your order from ship date to arrival. To begin, enter your order number.</p>
-							</div>
-							<div class="card-body">
-								<div class="total-revenue">
-									<div>
-									  <h4>120,750</h4>
-									  <label><span class="bg-primary"></span>success</label>
-									</div>
-									<div>
-									  <h4>56,108</h4>
-									  <label><span class="bg-danger"></span>Pending</label>
-									</div>
-									<div>
-									  <h4>32,895</h4>
-									  <label><span class="bg-warning"></span>Failed</label>
-									</div>
-								  </div>
-								<div id="bar" class="sales-bar mt-4"></div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-12 col-xl-5">
-						<div class="card card-dashboard-map-one">
-							<label class="main-content-label">Sales Revenue by Customers in USA</label>
-							<span class="d-block mg-b-20 text-muted tx-12">Sales Performance of all states in the United States</span>
-							<div class="">
-								<div class="vmap-wrapper ht-180" id="vmap2"></div>
-							</div>
-						</div>
-					</div>
+<!-- Current Shift Status Alert / Bar -->
+@if($data['active_shift'])
+	<div class="alert alert-info border-info shadow-sm mb-3">
+		<div class="d-flex justify-content-between align-items-center flex-wrap">
+			<div class="d-flex align-items-center">
+				<span class="badge badge-success px-3 py-2 font-weight-bold tx-13 ml-3">
+					<i class="fas fa-unlock ml-1"></i> وردية عمل مفتوحة حالياً (#{{ $data['active_shift']->id }})
+				</span>
+				<div>
+					<strong>المسؤول:</strong> {{ $data['active_shift']->user->name ?? '-' }} |
+					<strong>وقت الفتح:</strong> {{ $data['active_shift']->opened_at->format('Y-m-d g:i A') }} |
+					<strong>نقدية الافتتاح:</strong> {{ number_format($data['active_shift']->opening_cash, 2) }} جنيه مصري |
+					<strong>النقدية المتوقعة بالدرج:</strong> <span class="badge badge-primary px-2 py-1 tx-13 font-weight-bold">{{ number_format($data['active_shift']->calculated_expected_cash, 2) }} جنيه</span>
 				</div>
-				<!-- row closed -->
-
-				<!-- row opened -->
-				<div class="row row-sm">
-					<div class="col-xl-4 col-md-12 col-lg-12">
-						<div class="card">
-							<div class="card-header pb-1">
-								<h3 class="card-title mb-2">Recent Customers</h3>
-								<p class="tx-12 mb-0 text-muted">A customer is an individual or business that purchases the goods service has evolved to include real-time</p>
-							</div>
-							<div class="card-body p-0 customers mt-1">
-								<div class="list-group list-lg-group list-group-flush">
-									<div class="list-group-item list-group-item-action" href="#">
-										<div class="media mt-0">
-											<img class="avatar-lg rounded-circle ml-3 my-auto" src="{{URL::asset('assets/img/faces/3.jpg')}}" alt="Image description">
-											<div class="media-body">
-												<div class="d-flex align-items-center">
-													<div class="mt-0">
-														<h5 class="mb-1 tx-15">Samantha Melon</h5>
-														<p class="mb-0 tx-13 text-muted">User ID: #1234 <span class="text-success ml-2">Paid</span></p>
-													</div>
-													<span class="mr-auto wd-45p fs-16 mt-2">
-														<div id="spark1" class="wd-100p"></div>
-													</span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="list-group-item list-group-item-action" href="#">
-										<div class="media mt-0">
-											<img class="avatar-lg rounded-circle ml-3 my-auto" src="{{URL::asset('assets/img/faces/11.jpg')}}" alt="Image description">
-											<div class="media-body">
-												<div class="d-flex align-items-center">
-													<div class="mt-1">
-														<h5 class="mb-1 tx-15">Jimmy Changa</h5>
-														<p class="mb-0 tx-13 text-muted">User ID: #1234 <span class="text-danger ml-2">Pending</span></p>
-													</div>
-													<span class="mr-auto wd-45p fs-16 mt-2">
-														<div id="spark2" class="wd-100p"></div>
-													</span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="list-group-item list-group-item-action" href="#">
-										<div class="media mt-0">
-											<img class="avatar-lg rounded-circle ml-3 my-auto" src="{{URL::asset('assets/img/faces/17.jpg')}}" alt="Image description">
-											<div class="media-body">
-												<div class="d-flex align-items-center">
-													<div class="mt-1">
-														<h5 class="mb-1 tx-15">Gabe Lackmen</h5>
-														<p class="mb-0 tx-13 text-muted">User ID: #1234<span class="text-danger ml-2">Pending</span></p>
-													</div>
-													<span class="mr-auto wd-45p fs-16 mt-2">
-														<div id="spark3" class="wd-100p"></div>
-													</span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="list-group-item list-group-item-action" href="#">
-										<div class="media mt-0">
-											<img class="avatar-lg rounded-circle ml-3 my-auto" src="{{URL::asset('assets/img/faces/15.jpg')}}" alt="Image description">
-											<div class="media-body">
-												<div class="d-flex align-items-center">
-													<div class="mt-1">
-														<h5 class="mb-1 tx-15">Manuel Labor</h5>
-														<p class="mb-0 tx-13 text-muted">User ID: #1234<span class="text-success ml-2">Paid</span></p>
-													</div>
-													<span class="mr-auto wd-45p fs-16 mt-2">
-														<div id="spark4" class="wd-100p"></div>
-													</span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="list-group-item list-group-item-action br-br-7 br-bl-7" href="#">
-										<div class="media mt-0">
-											<img class="avatar-lg rounded-circle ml-3 my-auto" src="{{URL::asset('assets/img/faces/6.jpg')}}" alt="Image description">
-											<div class="media-body">
-												<div class="d-flex align-items-center">
-													<div class="mt-1">
-														<h5 class="mb-1 tx-15">Sharon Needles</h5>
-														<p class="b-0 tx-13 text-muted mb-0">User ID: #1234<span class="text-success ml-2">Paid</span></p>
-													</div>
-													<span class="mr-auto wd-45p fs-16 mt-2">
-														<div id="spark5" class="wd-100p"></div>
-													</span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-12 col-lg-6">
-						<div class="card">
-							<div class="card-header pb-1">
-								<h3 class="card-title mb-2">Sales Activity</h3>
-								<p class="tx-12 mb-0 text-muted">Sales activities are the tactics that salespeople use to achieve their goals and objective</p>
-							</div>
-							<div class="product-timeline card-body pt-2 mt-1">
-								<ul class="timeline-1 mb-0">
-									<li class="mt-0"> <i class="ti-pie-chart bg-primary-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Total Products</span> <a href="#" class="float-left tx-11 text-muted">3 days ago</a>
-										<p class="mb-0 text-muted tx-12">1.3k New Products</p>
-									</li>
-									<li class="mt-0"> <i class="mdi mdi-cart-outline bg-danger-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Total Sales</span> <a href="#" class="float-left tx-11 text-muted">35 mins ago</a>
-										<p class="mb-0 text-muted tx-12">1k New Sales</p>
-									</li>
-									<li class="mt-0"> <i class="ti-bar-chart-alt bg-success-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Toatal Revenue</span> <a href="#" class="float-left tx-11 text-muted">50 mins ago</a>
-										<p class="mb-0 text-muted tx-12">23.5K New Revenue</p>
-									</li>
-									<li class="mt-0"> <i class="ti-wallet bg-warning-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Toatal Profit</span> <a href="#" class="float-left tx-11 text-muted">1 hour ago</a>
-										<p class="mb-0 text-muted tx-12">3k New profit</p>
-									</li>
-									<li class="mt-0"> <i class="si si-eye bg-purple-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Customer Visits</span> <a href="#" class="float-left tx-11 text-muted">1 day ago</a>
-										<p class="mb-0 text-muted tx-12">15% increased</p>
-									</li>
-									<li class="mt-0 mb-0"> <i class="icon-note icons bg-primary-gradient text-white product-icon"></i> <span class="font-weight-semibold mb-4 tx-14 ">Customer Reviews</span> <a href="#" class="float-left tx-11 text-muted">1 day ago</a>
-										<p class="mb-0 text-muted tx-12">1.5k reviews</p>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-4 col-md-12 col-lg-6">
-						<div class="card">
-							<div class="card-header pb-0">
-								<h3 class="card-title mb-2">Recent Orders</h3>
-								<p class="tx-12 mb-0 text-muted">An order is an investor's instructions to a broker or brokerage firm to purchase or sell</p>
-							</div>
-							<div class="card-body sales-info ot-0 pt-0 pb-0">
-								<div id="chart" class="ht-150"></div>
-								<div class="row sales-infomation pb-0 mb-0 mx-auto wd-100p">
-									<div class="col-md-6 col">
-										<p class="mb-0 d-flex"><span class="legend bg-primary brround"></span>Delivered</p>
-										<h3 class="mb-1">5238</h3>
-										<div class="d-flex">
-											<p class="text-muted ">Last 6 months</p>
-										</div>
-									</div>
-									<div class="col-md-6 col">
-										<p class="mb-0 d-flex"><span class="legend bg-info brround"></span>Cancelled</p>
-											<h3 class="mb-1">3467</h3>
-										<div class="d-flex">
-											<p class="text-muted">Last 6 months</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card ">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-md-6">
-										<div class="d-flex align-items-center pb-2">
-											<p class="mb-0">Total Sales</p>
-										</div>
-										<h4 class="font-weight-bold mb-2">$7,590</h4>
-										<div class="progress progress-style progress-sm">
-											<div class="progress-bar bg-primary-gradient wd-80p" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="78"></div>
-										</div>
-									</div>
-									<div class="col-md-6 mt-4 mt-md-0">
-										<div class="d-flex align-items-center pb-2">
-											<p class="mb-0">Active Users</p>
-										</div>
-										<h4 class="font-weight-bold mb-2">$5,460</h4>
-										<div class="progress progress-style progress-sm">
-											<div class="progress-bar bg-danger-gradient wd-75" role="progressbar"  aria-valuenow="45" aria-valuemin="0" aria-valuemax="45"></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- row close -->
-
-				<!-- row opened -->
-				<div class="row row-sm row-deck">
-					<div class="col-md-12 col-lg-4 col-xl-4">
-						<div class="card card-dashboard-eight pb-2">
-							<h6 class="card-title">Your Top Countries</h6><span class="d-block mg-b-10 text-muted tx-12">Sales performance revenue based by country</span>
-							<div class="list-group">
-								<div class="list-group-item border-top-0">
-									<i class="flag-icon flag-icon-us flag-icon-squared"></i>
-									<p>United States</p><span>$1,671.10</span>
-								</div>
-								<div class="list-group-item">
-									<i class="flag-icon flag-icon-nl flag-icon-squared"></i>
-									<p>Netherlands</p><span>$1,064.75</span>
-								</div>
-								<div class="list-group-item">
-									<i class="flag-icon flag-icon-gb flag-icon-squared"></i>
-									<p>United Kingdom</p><span>$1,055.98</span>
-								</div>
-								<div class="list-group-item">
-									<i class="flag-icon flag-icon-ca flag-icon-squared"></i>
-									<p>Canada</p><span>$1,045.49</span>
-								</div>
-								<div class="list-group-item">
-									<i class="flag-icon flag-icon-in flag-icon-squared"></i>
-									<p>India</p><span>$1,930.12</span>
-								</div>
-								<div class="list-group-item border-bottom-0 mb-0">
-									<i class="flag-icon flag-icon-au flag-icon-squared"></i>
-									<p>Australia</p><span>$1,042.00</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 col-lg-8 col-xl-8">
-						<div class="card card-table-two">
-							<div class="d-flex justify-content-between">
-								<h4 class="card-title mb-1">Your Most Recent Earnings</h4>
-								<i class="mdi mdi-dots-horizontal text-gray"></i>
-							</div>
-							<span class="tx-12 tx-muted mb-3 ">This is your most recent earnings for today's date.</span>
-							<div class="table-responsive country-table">
-								<table class="table table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
-									<thead>
-										<tr>
-											<th class="wd-lg-25p">Date</th>
-											<th class="wd-lg-25p tx-right">Sales Count</th>
-											<th class="wd-lg-25p tx-right">Earnings</th>
-											<th class="wd-lg-25p tx-right">Tax Witheld</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>05 Dec 2019</td>
-											<td class="tx-right tx-medium tx-inverse">34</td>
-											<td class="tx-right tx-medium tx-inverse">$658.20</td>
-											<td class="tx-right tx-medium tx-danger">-$45.10</td>
-										</tr>
-										<tr>
-											<td>06 Dec 2019</td>
-											<td class="tx-right tx-medium tx-inverse">26</td>
-											<td class="tx-right tx-medium tx-inverse">$453.25</td>
-											<td class="tx-right tx-medium tx-danger">-$15.02</td>
-										</tr>
-										<tr>
-											<td>07 Dec 2019</td>
-											<td class="tx-right tx-medium tx-inverse">34</td>
-											<td class="tx-right tx-medium tx-inverse">$653.12</td>
-											<td class="tx-right tx-medium tx-danger">-$13.45</td>
-										</tr>
-										<tr>
-											<td>08 Dec 2019</td>
-											<td class="tx-right tx-medium tx-inverse">45</td>
-											<td class="tx-right tx-medium tx-inverse">$546.47</td>
-											<td class="tx-right tx-medium tx-danger">-$24.22</td>
-										</tr>
-										<tr>
-											<td>09 Dec 2019</td>
-											<td class="tx-right tx-medium tx-inverse">31</td>
-											<td class="tx-right tx-medium tx-inverse">$425.72</td>
-											<td class="tx-right tx-medium tx-danger">-$25.01</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- /row -->
+			</div>
+			<div class="mt-2 mt-md-0">
+				<a href="{{ route('shifts.current') }}" class="btn btn-sm btn-primary font-weight-bold">
+					<i class="fas fa-eye ml-1"></i> متابعة / إغلاق الوردية
+				</a>
 			</div>
 		</div>
-		<!-- Container closed -->
+	</div>
+@else
+	<div class="alert alert-warning border-warning shadow-sm mb-3">
+		<div class="d-flex justify-content-between align-items-center flex-wrap">
+			<div class="d-flex align-items-center">
+				<i class="fas fa-lock tx-24 text-warning ml-3"></i>
+				<div>
+					<strong class="tx-14">تنبيه: لا توجد وردية عمل مفتوحة حالياً للكاشير.</strong>
+					<p class="mb-0 tx-12 text-muted">لبدء عمليات البيع واستلام النقدية في الدرج، يرجى فتح وردية جديدة.</p>
+				</div>
+			</div>
+			<div class="mt-2 mt-md-0">
+				<a href="{{ route('shifts.current') }}" class="btn btn-sm btn-warning font-weight-bold">
+					<i class="fas fa-key ml-1"></i> فتح وردية جديدة الآن
+				</a>
+			</div>
+		</div>
+	</div>
+@endif
+
+<!-- Today's Live Flash Bar (If viewing another period, still see today's pulse) -->
+@if($currentPeriod !== 'today')
+	<div class="card mb-3 bg-light border">
+		<div class="card-body py-2">
+			<div class="d-flex justify-content-between align-items-center flex-wrap tx-13">
+				<div>
+					<span class="badge badge-pill badge-danger ml-2 font-weight-bold">مباشر اليوم</span>
+					<span><strong>مبيعات اليوم:</strong> {{ number_format($data['today']['net_sales'], 2) }} جنيه ({{ $data['today']['sales_count'] }} فاتورة)</span>
+					<span class="mr-3"><strong>مرتجعات اليوم:</strong> {{ number_format($data['today']['returns_total'], 2) }} جنيه</span>
+					<span class="mr-3"><strong>مصروفات اليوم:</strong> {{ number_format($data['today']['expenses_total'], 2) }} جنيه</span>
+				</div>
+				<div>
+					<span class="text-muted tx-12">بيانات البطاقات أدناه تعرض فترة: <strong>{{ $dateRange['label'] }}</strong></span>
+				</div>
+			</div>
+		</div>
+	</div>
+@endif
+
+<!-- Row 1: Primary KPI Cards -->
+<div class="row row-sm mb-2">
+	<!-- Net Sales (Main Hero Card) -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+		<div class="card overflow-hidden sales-card bg-primary-gradient">
+			<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+				<div class="d-flex justify-content-between">
+					<h6 class="mb-3 tx-13 text-white font-weight-bold">صافي المبيعات</h6>
+					<span class="badge badge-light tx-11 font-weight-bold px-2 py-0">بعد المرتجعات</span>
+				</div>
+				<div class="pb-0 mt-0">
+					<div class="d-flex">
+						<div>
+							<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($data['period']['net_sales'], 2) }} جنيه</h3>
+							<p class="mb-0 tx-12 text-white op-8">
+								{{ $data['period']['invoices_count'] }} فاتورة بيع مكتملة
+							</p>
+						</div>
+						<span class="float-right my-auto mr-auto">
+							<i class="fas fa-chart-line text-white tx-26"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Gross Sales & Discounts -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+		<div class="card overflow-hidden sales-card bg-success-gradient">
+			<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+				<div class="d-flex justify-content-between">
+					<h6 class="mb-3 tx-13 text-white font-weight-bold">إجمالي المبيعات والخصومات</h6>
+					<i class="fas fa-file-invoice text-white tx-18"></i>
+				</div>
+				<div class="pb-0 mt-0">
+					<div class="d-flex">
+						<div>
+							<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($data['period']['gross_sales'], 2) }} جنيه</h3>
+							<p class="mb-0 tx-12 text-white op-8">
+								خصومات ممنوحة: {{ number_format($data['period']['discounts_total'], 2) }} جنيه
+							</p>
+						</div>
+						<span class="float-right my-auto mr-auto">
+							<i class="fas fa-tags text-white tx-26"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Completed Returns -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+		<div class="card overflow-hidden sales-card bg-danger-gradient">
+			<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+				<div class="d-flex justify-content-between">
+					<h6 class="mb-3 tx-13 text-white font-weight-bold">المرتجعات المعتمدة</h6>
+					<span class="badge badge-light tx-11 font-weight-bold px-2 py-0">{{ $data['period']['returns_count'] }} إشعار</span>
+				</div>
+				<div class="pb-0 mt-0">
+					<div class="d-flex">
+						<div>
+							<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($data['period']['returns_total'], 2) }} جنيه</h3>
+							<p class="mb-0 tx-12 text-white op-8">
+								استرداد نقدي: {{ number_format($data['period']['cash_returns'], 2) }} جنيه
+							</p>
+						</div>
+						<span class="float-right my-auto mr-auto">
+							<i class="fas fa-undo-alt text-white tx-26"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Operating Expenses -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
+		<div class="card overflow-hidden sales-card bg-warning-gradient">
+			<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
+				<div class="d-flex justify-content-between">
+					<h6 class="mb-3 tx-13 text-white font-weight-bold">المصروفات التشغيلية</h6>
+					<span class="badge badge-light tx-11 font-weight-bold px-2 py-0">{{ $data['period']['expenses_count'] }} مصروف</span>
+				</div>
+				<div class="pb-0 mt-0">
+					<div class="d-flex">
+						<div>
+							<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($data['period']['expenses_total'], 2) }} جنيه</h3>
+							<p class="mb-0 tx-12 text-white op-8">
+								مصروفات نقدية: {{ number_format($data['period']['cash_expenses'], 2) }} جنيه
+							</p>
+						</div>
+						<span class="float-right my-auto mr-auto">
+							<i class="fas fa-receipt text-white tx-26"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Row 2: Financial Integrity & Profit Indicators -->
+<div class="row row-sm mb-3">
+	<!-- Gross Profit (مجمل الربح) -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-12">
+		<div class="card border shadow-sm">
+			<div class="card-body p-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<div>
+						<span class="text-muted tx-12 d-block font-weight-bold">مجمل الربح :</span>
+						<h4 class="font-weight-bold mb-0 {{ $data['period']['gross_profit'] >= 0 ? 'text-success' : 'text-danger' }}">
+							{{ number_format($data['period']['gross_profit'], 2) }} <small class="tx-12">جنيه</small>
+						</h4>
+						<span class="tx-11 text-muted">
+							هامش الربح: <strong class="text-dark">{{ $data['period']['gross_profit_margin'] }}%</strong> (تكلفة COGS: {{ number_format($data['period']['net_cogs'], 2) }})
+						</span>
+					</div>
+					<div class="p-2 bg-success-transparent rounded-circle">
+						<i class="fas fa-coins text-success tx-22"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Net Profit (صافي الربح بعد المصروفات) -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-12">
+		<div class="card border shadow-sm">
+			<div class="card-body p-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<div>
+						<span class="text-muted tx-12 d-block font-weight-bold">صافي الربح :</span>
+						<h4 class="font-weight-bold mb-0 {{ $data['period']['net_profit'] >= 0 ? 'text-primary' : 'text-danger' }}">
+							{{ number_format($data['period']['net_profit'], 2) }} <small class="tx-12">جنيه</small>
+						</h4>
+						<span class="tx-11 text-muted">
+							صافي الهامش: <strong class="text-dark">{{ $data['period']['net_profit_margin'] }}%</strong> بعد خصم المصروفات
+						</span>
+					</div>
+					<div class="p-2 bg-primary-transparent rounded-circle">
+						<i class="fas fa-award text-primary tx-22"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Physical Cash Flow in Drawer -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-12">
+		<div class="card border shadow-sm">
+			<div class="card-body p-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<div>
+						<span class="text-muted tx-12 d-block font-weight-bold">صافي النقدية بالدرج :</span>
+						<h4 class="font-weight-bold mb-0 {{ $data['period']['net_cash_drawer_flow'] >= 0 ? 'text-dark' : 'text-danger' }}">
+							{{ number_format($data['period']['net_cash_drawer_flow'], 2) }} <small class="tx-12">جنيه</small>
+						</h4>
+						<span class="tx-11 text-muted">
+							كاش: +{{ number_format($data['period']['cash_sales'], 0) }} | استرداد: -{{ number_format($data['period']['cash_returns'], 0) }} | مصروف: -{{ number_format($data['period']['cash_expenses'], 0) }}
+						</span>
+					</div>
+					<div class="p-2 bg-warning-transparent rounded-circle">
+						<i class="fas fa-money-bill-wave text-warning tx-22"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Electronic Wallets & InstaPay -->
+	<div class="col-xl-3 col-lg-6 col-md-6 col-12">
+		<div class="card border shadow-sm">
+			<div class="card-body p-3">
+				<div class="d-flex justify-content-between align-items-center">
+					<div>
+						<span class="text-muted tx-12 d-block font-weight-bold">المدفوعات الإلكترونية (محافظ / بنك):</span>
+						<h4 class="font-weight-bold mb-0 text-info">
+							{{ number_format($data['period']['electronic_sales'], 2) }} <small class="tx-12">جنيه</small>
+						</h4>
+						<span class="tx-11 text-muted">
+							فودافون كاش: {{ number_format($data['period']['vodafone_cash_sales'], 0) }} | انستا باي: {{ number_format($data['period']['instapay_sales'], 0) }}
+						</span>
+					</div>
+					<div class="p-2 bg-info-transparent rounded-circle">
+						<i class="fas fa-mobile-alt text-info tx-22"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Row 3: Interactive Charts -->
+<div class="row row-sm mb-3">
+	<!-- Sales Trend Chart (8 Cols) -->
+	<div class="col-xl-8 col-lg-7 col-md-12">
+		<div class="card border shadow-sm">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h6 class="card-title mb-0 font-weight-bold text-dark">
+					<i class="fas fa-chart-area ml-1 text-primary"></i> منحنى حركة المبيعات ({{ $dateRange['label'] }})
+				</h6>
+				<span class="badge badge-light border tx-12 font-weight-semibold">
+					متوسط قيمة الفاتورة: {{ number_format($data['period']['average_invoice_value'], 2) }} جنيه
+				</span>
+			</div>
+			<div class="card-body">
+				<canvas id="salesTrendChart" style="height: 280px; width: 100%;"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<!-- Payment Methods Doughnut Chart (4 Cols) -->
+	<div class="col-xl-4 col-lg-5 col-md-12">
+		<div class="card border shadow-sm">
+			<div class="card-header pb-0">
+				<h6 class="card-title mb-0 font-weight-bold text-dark">
+					<i class="fas fa-chart-pie ml-1 text-primary"></i> توزيع المبيعات حسب طريقة الدفع
+				</h6>
+			</div>
+			<div class="card-body text-center">
+				<div style="height: 220px; position: relative;">
+					<canvas id="paymentMethodsChart"></canvas>
+				</div>
+				<div class="d-flex justify-content-around mt-3 tx-12">
+					<div>
+						<span class="d-block text-success font-weight-bold"><i class="fas fa-circle tx-10"></i> نقداً (كاش)</span>
+						<strong>{{ number_format($data['period']['cash_sales'], 2) }} جنيه</strong>
+					</div>
+					<div>
+						<span class="d-block text-danger font-weight-bold"><i class="fas fa-circle tx-10"></i> فودافون كاش</span>
+						<strong>{{ number_format($data['period']['vodafone_cash_sales'], 2) }} جنيه</strong>
+					</div>
+					<div>
+						<span class="d-block text-primary font-weight-bold"><i class="fas fa-circle tx-10"></i> انستا باي</span>
+						<strong>{{ number_format($data['period']['instapay_sales'], 2) }} جنيه</strong>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Row 4: Lists & Tables (Best Selling, Low Stock, Recent Invoices) -->
+<div class="row row-sm">
+	<!-- Best Selling Products (6 Cols) -->
+	<div class="col-xl-6 col-lg-12 mb-3">
+		<div class="card border shadow-sm h-100">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h6 class="card-title mb-0 font-weight-bold text-dark">
+					<i class="fas fa-fire ml-1 text-danger"></i> المنتجات الأكثر مبيعاً في الفترة
+				</h6>
+				<a href="{{ route('reports.products') }}" class="tx-12 font-weight-bold text-primary">
+					عرض تقرير المنتجات بالكامل <i class="fas fa-angle-left mr-1"></i>
+				</a>
+			</div>
+			<div class="card-body p-0">
+				@if($data['best_selling_products']->isEmpty())
+					<div class="text-center py-4 text-muted tx-13">
+						لا توجد مبيعات مسجلة في الفترة المحددة.
+					</div>
+				@else
+					<div class="table-responsive">
+						<table class="table table-hover table-striped text-center align-middle mb-0 tx-13">
+							<thead class="thead-light">
+								<tr>
+									<th>#</th>
+									<th class="text-right">المنتج</th>
+									<th>الكمية المباعة</th>
+									<th>صافي القطع</th>
+									<th>صافي الإيراد</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($data['best_selling_products'] as $prod)
+									<tr>
+										<td>{{ $loop->iteration }}</td>
+										<td class="text-right font-weight-bold">
+											<a href="{{ route('products.show', $prod->id) }}" class="text-dark">
+												{{ $prod->name }}
+											</a>
+											<span class="d-block tx-11 text-muted">#{{ $prod->id }}</span>
+										</td>
+										<td>{{ rtrim(rtrim(number_format($prod->qty_sold, 3), '0'), '.') }}</td>
+										<td>
+											<span class="badge badge-success px-2 py-1 font-weight-bold">
+												{{ rtrim(rtrim(number_format($prod->net_qty, 3), '0'), '.') }}
+											</span>
+										</td>
+										<td class="font-weight-bold text-primary">
+											{{ number_format($prod->net_revenue, 2) }} جنيه
+										</td>
+									</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				@endif
+			</div>
+		</div>
+	</div>
+
+	<!-- Low Stock Alerts (6 Cols) -->
+	<div class="col-xl-6 col-lg-12 mb-3">
+		<div class="card border shadow-sm h-100">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h6 class="card-title mb-0 font-weight-bold text-dark">
+					<i class="fas fa-exclamation-triangle ml-1 text-warning"></i> تنبيهات النواقص والحد الأدنى ({{ $data['low_stock_count'] }})
+				</h6>
+				<a href="{{ route('reports.low-stock') }}" class="tx-12 font-weight-bold text-danger">
+					عرض تقرير النواقص <i class="fas fa-angle-left mr-1"></i>
+				</a>
+			</div>
+			<div class="card-body p-0">
+				@if($data['low_stock_list']->isEmpty())
+					<div class="text-center py-4 text-success tx-13 font-weight-bold">
+						<i class="fas fa-check-circle tx-24 ml-1"></i> رائع! كافة المنتجات لديها رصيد آمن أعلى من الحد الأدنى.
+					</div>
+				@else
+					<div class="table-responsive">
+						<table class="table table-hover table-striped text-center align-middle mb-0 tx-13">
+							<thead class="thead-light">
+								<tr>
+									<th class="text-right">المنتج</th>
+									<th>التصنيف</th>
+									<th>الرصيد الحالي</th>
+									<th>الحد الأدنى</th>
+									<th>الحالة</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($data['low_stock_list'] as $product)
+									<tr>
+										<td class="text-right font-weight-bold">
+											<a href="{{ route('products.show', $product) }}" class="text-dark">
+												{{ $product->name }}
+											</a>
+										</td>
+										<td class="tx-11 text-muted">
+											{{ $product->subcategory->name ?? '-' }}
+										</td>
+										<td class="font-weight-bold {{ $product->stock_quantity <= 0 ? 'text-danger' : 'text-warning' }}">
+											{{ rtrim(rtrim(number_format($product->stock_quantity, 3), '0'), '.') }}
+										</td>
+										<td class="text-muted">
+											{{ rtrim(rtrim(number_format($product->minimum_stock, 3), '0'), '.') }}
+										</td>
+										<td>
+											@if($product->stock_quantity <= 0)
+												<span class="badge badge-danger font-weight-bold">نفد من المخزون</span>
+											@else
+												<span class="badge badge-warning font-weight-bold">أوشك على النفاد</span>
+											@endif
+										</td>
+									</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				@endif
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Row 5: Recent Sales Table -->
+<div class="row row-sm mb-3">
+	<div class="col-12">
+		<div class="card border shadow-sm">
+			<div class="card-header pb-0 d-flex justify-content-between align-items-center">
+				<h6 class="card-title mb-0 font-weight-bold text-dark">
+					<i class="fas fa-receipt ml-1 text-primary"></i> آخر فواتير المبيعات المسجلة بالمتجر
+				</h6>
+				<a href="{{ route('sales.index') }}" class="tx-12 font-weight-bold text-primary">
+					سجل كافة الفواتير <i class="fas fa-angle-left mr-1"></i>
+				</a>
+			</div>
+			<div class="card-body p-0">
+				<div class="table-responsive">
+					<table class="table table-hover table-striped text-center align-middle mb-0 tx-13">
+						<thead class="thead-light">
+							<tr>
+								<th>رقم الفاتورة</th>
+								<th>الكاشير</th>
+								<th>طريقة الدفع</th>
+								<th>الإجمالي</th>
+								<th>الحالة</th>
+								<th>التوقيت</th>
+								<th>الإجراءات</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($data['recent_sales'] as $sale)
+								<tr>
+									<td class="font-weight-bold text-primary">
+										<a href="{{ route('sales.show', $sale) }}">#{{ $sale->invoice_number }}</a>
+									</td>
+									<td>{{ $sale->user->name ?? '-' }}</td>
+									<td>
+										<span class="badge {{ $sale->payment_method_badge_class }}">
+											{{ $sale->payment_method_label }}
+										</span>
+									</td>
+									<td class="font-weight-bold text-dark">{{ number_format($sale->total, 2) }} جنيه</td>
+									<td>
+										<span class="badge {{ $sale->status_badge_class }}">
+											{{ $sale->status_label }}
+										</span>
+									</td>
+									<td class="tx-12 text-muted">{{ $sale->created_at->format('Y-m-d g:i A') }}</td>
+									<td>
+										<a href="{{ route('sales.show', $sale) }}" class="btn btn-xs btn-info"><i class="fas fa-eye"></i></a>
+										<a href="{{ route('sales.print', $sale) }}" target="_blank" class="btn btn-xs btn-primary"><i class="fas fa-print"></i></a>
+									</td>
+								</tr>
+							@endforeach
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 @endsection
+
 @section('js')
-<!--Internal  Chart.bundle js -->
-<script src="{{URL::asset('assets/plugins/chart.js/Chart.bundle.min.js')}}"></script>
-<!-- Moment js -->
-<script src="{{URL::asset('assets/plugins/raphael/raphael.min.js')}}"></script>
-<!--Internal  Flot js-->
-<script src="{{URL::asset('assets/plugins/jquery.flot/jquery.flot.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/jquery.flot/jquery.flot.pie.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/jquery.flot/jquery.flot.resize.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/jquery.flot/jquery.flot.categories.js')}}"></script>
-<script src="{{URL::asset('assets/js/dashboard.sampledata.js')}}"></script>
-<script src="{{URL::asset('assets/js/chart.flot.sampledata.js')}}"></script>
-<!--Internal Apexchart js-->
-<script src="{{URL::asset('assets/js/apexcharts.js')}}"></script>
-<!-- Internal Map -->
-<script src="{{URL::asset('assets/plugins/jqvmap/jquery.vmap.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script>
-<script src="{{URL::asset('assets/js/modal-popup.js')}}"></script>
-<!--Internal  index js -->
-<script src="{{URL::asset('assets/js/index.js')}}"></script>
-<script src="{{URL::asset('assets/js/jquery.vmap.sampledata.js')}}"></script>
+<!-- Internal Chart.bundle js -->
+<script src="{{ asset('assets/plugins/chart.js/Chart.bundle.min.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Sales Trend Chart
+    const trendCtx = document.getElementById('salesTrendChart');
+    if (trendCtx) {
+        new Chart(trendCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($data['chart_data']['labels']) !!},
+                datasets: [
+                    {
+                        label: 'إجمالي المبيعات (جنيه)',
+                        data: {!! json_encode($data['chart_data']['sales']) !!},
+                        borderColor: '#0162e8',
+                        backgroundColor: 'rgba(1, 98, 232, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'صافي المبيعات بعد المرتجع (جنيه)',
+                        data: {!! json_encode($data['chart_data']['net_sales']) !!},
+                        borderColor: '#22c03c',
+                        backgroundColor: 'rgba(34, 192, 60, 0.05)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: true,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(value) { return value.toLocaleString() + ' ج.م'; }
+                        }
+                    }]
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(item, data) {
+                            return data.datasets[item.datasetIndex].label + ': ' + Number(item.yLabel).toLocaleString() + ' جنيه';
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Payment Methods Doughnut Chart
+    const pmCtx = document.getElementById('paymentMethodsChart');
+    if (pmCtx) {
+        new Chart(pmCtx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['نقداً (كاش)', 'فودافون كاش', 'انستا باي'],
+                datasets: [{
+                    data: [
+                        {{ (float) $data['period']['cash_sales'] }},
+                        {{ (float) $data['period']['vodafone_cash_sales'] }},
+                        {{ (float) $data['period']['instapay_sales'] }}
+                    ],
+                    backgroundColor: ['#22c03c', '#ee335e', '#0162e8'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { display: false }
+            }
+        });
+    }
+});
+</script>
 @endsection

@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ShiftController;
@@ -21,9 +23,7 @@ Route::get('/', function () {
 
 // Authenticated and active routes
 Route::middleware(['auth', 'active'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('index');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -82,6 +82,20 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('returns/{return}/print', [ReturnController::class, 'print'])->name('returns.print');
     Route::patch('returns/{return}/cancel', [ReturnController::class, 'cancel'])->name('returns.cancel');
     Route::get('returns/{return}', [ReturnController::class, 'show'])->name('returns.show');
+
+    // 10. Reports & Analytics Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+        Route::get('/payment-methods', [ReportController::class, 'paymentMethods'])->name('payment-methods');
+        Route::get('/products', [ReportController::class, 'products'])->name('products');
+        Route::get('/employees', [ReportController::class, 'employees'])->name('employees');
+        Route::get('/shifts', [ReportController::class, 'shifts'])->name('shifts');
+        Route::get('/expenses', [ReportController::class, 'expenses'])->name('expenses');
+        Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
+        Route::get('/low-stock', [ReportController::class, 'lowStock'])->name('low-stock');
+        Route::get('/profit', [ReportController::class, 'profit'])->name('profit');
+    });
 });
 
 // Authentication routes (login, logout, password)
