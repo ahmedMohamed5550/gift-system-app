@@ -140,16 +140,21 @@
 </div>
 
 <!-- Filters Card -->
-<div class="card mb-4">
-	<div class="card-body">
+<div class="card mb-3">
+	<div class="card-body py-3">
 		<form method="GET" action="{{ route('expenses.index') }}">
 			<div class="row row-sm">
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12">البحث</label>
-					<input type="text" name="search" class="form-control" placeholder="ابحث في البند أو البيان..." value="{{ request('search') }}">
+				<div class="col-md-3 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">البحث:</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-search"></i></span>
+						</div>
+						<input type="text" name="search" class="form-control" placeholder="ابحث في البند أو البيان..." value="{{ request('search') }}">
+					</div>
 				</div>
-				<div class="col-lg-2 col-md-6 mb-2">
-					<label class="form-label tx-12">طريقة الدفع</label>
+				<div class="col-md-2 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">طريقة الدفع:</label>
 					<select name="payment_method" class="form-control">
 						<option value="">-- كل الطرق --</option>
 						<option value="cash" {{ request('payment_method') === 'cash' ? 'selected' : '' }}>نقداً (كاش)</option>
@@ -157,16 +162,16 @@
 						<option value="instapay" {{ request('payment_method') === 'instapay' ? 'selected' : '' }}>انستا باي</option>
 					</select>
 				</div>
-				<div class="col-lg-2 col-md-6 mb-2">
-					<label class="form-label tx-12">الحالة</label>
+				<div class="col-md-2 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">الحالة:</label>
 					<select name="status" class="form-control">
 						<option value="">-- كل الحالات --</option>
 						<option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>نشط / معتمد</option>
 						<option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>ملغي</option>
 					</select>
 				</div>
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12">المسؤول</label>
+				<div class="col-md-2 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">المسؤول:</label>
 					<select name="user_id" class="form-control">
 						<option value="">-- كل المستخدمين --</option>
 						@foreach($users as $u)
@@ -176,23 +181,24 @@
 						@endforeach
 					</select>
 				</div>
-				<div class="col-lg-2 col-md-12 mb-2 d-flex align-items-end">
-					<button type="submit" class="btn btn-primary ml-2 flex-grow-1">
-						<i class="fas fa-filter ml-1"></i> تصفية
+				<div class="col-md-3 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">الفترة الزمنية:</label>
+					<div class="input-group">
+						<input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" title="من تاريخ">
+						<div class="input-group-prepend input-group-append">
+							<span class="input-group-text"><i class="fas fa-arrow-left"></i></span>
+						</div>
+						<input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" title="إلى تاريخ">
+					</div>
+				</div>
+
+				<div class="col-12 text-left mt-2">
+					<button type="submit" class="btn btn-primary font-weight-bold">
+						<i class="fas fa-search ml-1"></i> تصفية النتائج
 					</button>
-					<a href="{{ route('expenses.index') }}" class="btn btn-secondary">
-						<i class="fas fa-redo"></i>
+					<a href="{{ route('expenses.index') }}" class="btn btn-outline-secondary font-weight-bold">
+						<i class="fas fa-times ml-1"></i> إلغاء التصفية
 					</a>
-				</div>
-			</div>
-			<div class="row row-sm mt-1">
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12">من تاريخ</label>
-					<input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
-				</div>
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12">إلى تاريخ</label>
-					<input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
 				</div>
 			</div>
 		</form>
@@ -200,7 +206,7 @@
 </div>
 
 <!-- Expenses Table Card -->
-<div class="card">
+<div class="card" id="live-search-container">
 	<div class="card-header pb-0 d-flex justify-content-between align-items-center">
 		<h4 class="card-title mg-b-0"><i class="fas fa-file-invoice-dollar ml-1 text-primary"></i> قائمة المصروفات</h4>
 		<span class="tx-12 text-muted">إجمالي السجلات: {{ $expenses->total() }}</span>

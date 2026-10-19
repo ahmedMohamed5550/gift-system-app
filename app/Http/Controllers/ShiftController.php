@@ -26,13 +26,18 @@ class ShiftController extends Controller
      */
     public function index(Request $request): View
     {
+        $user = Auth::user();
         $query = Shift::with('user');
+
+        if (! $user->isOwner()) {
+            $query->where('user_id', $user->id);
+        }
 
         if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
 
-        if ($userId = $request->input('user_id')) {
+        if ($user->isOwner() && $userId = $request->input('user_id')) {
             $query->where('user_id', $userId);
         }
 
@@ -46,15 +51,23 @@ class ShiftController extends Controller
 
         $shifts = $query->latest('opened_at')->paginate(15)->withQueryString();
 
+        $statsQuery = Shift::query();
+        if (! $user->isOwner()) {
+            $statsQuery->where('user_id', $user->id);
+        }
+
         $stats = [
-            'total_shifts' => Shift::count(),
-            'open_shifts' => Shift::where('status', 'open')->count(),
-            'closed_shifts' => Shift::where('status', 'closed')->count(),
-            'total_cash_collected' => (float) (Shift::where('status', 'closed')->sum('closing_cash') ?? 0),
-            'total_difference' => (float) (Shift::where('status', 'closed')->sum('difference') ?? 0),
+            'total_shifts' => (clone $statsQuery)->count(),
+            'open_shifts' => (clone $statsQuery)->where('status', 'open')->count(),
+            'closed_shifts' => (clone $statsQuery)->where('status', 'closed')->count(),
+            'total_cash_collected' => (float) ((clone $statsQuery)->where('status', 'closed')->sum('closing_cash') ?? 0),
+            'total_difference' => (float) ((clone $statsQuery)->where('status', 'closed')->sum('difference') ?? 0),
         ];
 
-        $users = User::orderBy('name')->get(['id', 'name']);
+        $users = $user->isOwner()
+            ? User::orderBy('name')->get(['id', 'name'])
+            : collect([$user]);
+
         $activeShift = $this->shiftService->getActiveShift(Auth::user());
 
         return view('shifts.index', compact('shifts', 'stats', 'users', 'activeShift'));
@@ -90,6 +103,8 @@ class ShiftController extends Controller
      */
     public function show(Shift $shift): View
     {
+        abort_if(! Auth::user()->isOwner() && $shift->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية للوصول إلى هذه الوردية.');
+
         $shift->load([
             'user',
             'sales' => fn($q) => $q->latest(),
@@ -122,6 +137,8 @@ class ShiftController extends Controller
      */
     public function close(CloseShiftRequest $request, Shift $shift): RedirectResponse
     {
+        abort_if(! Auth::user()->isOwner() && $shift->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لإغلاق وردية تخص موظفاً آخر.');
+
         $closedShift = $this->shiftService->closeShift(
             shift: $shift,
             actualClosingCash: (float) $request->input('closing_cash'),
@@ -146,6 +163,8 @@ class ShiftController extends Controller
      */
     public function print(Shift $shift): View
     {
+        abort_if(! Auth::user()->isOwner() && $shift->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لطباعة تقرير هذه الوردية.');
+
         $summary = $this->shiftService->getShiftFinancialSummary($shift);
 
         return view('shifts.print', compact('shift', 'summary'));

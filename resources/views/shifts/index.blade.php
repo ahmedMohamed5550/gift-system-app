@@ -152,20 +152,20 @@
 </div>
 
 <!-- Filters Card -->
-<div class="card mb-4">
-	<div class="card-body">
+<div class="card mb-3">
+	<div class="card-body py-3">
 		<form method="GET" action="{{ route('shifts.index') }}">
 			<div class="row row-sm">
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12">حالة الوردية</label>
+				<div class="col-md-3 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">حالة الوردية:</label>
 					<select name="status" class="form-control">
 						<option value="">-- كل الحالات --</option>
 						<option value="open" {{ request('status') === 'open' ? 'selected' : '' }}>مفتوحة</option>
 						<option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>مغلقة ومسواة</option>
 					</select>
 				</div>
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12">الكاشير / المسؤول</label>
+				<div class="col-md-4 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">الكاشير / المسؤول:</label>
 					<select name="user_id" class="form-control">
 						<option value="">-- كل المستخدمين --</option>
 						@foreach($users as $u)
@@ -175,20 +175,23 @@
 						@endforeach
 					</select>
 				</div>
-				<div class="col-lg-2 col-md-6 mb-2">
-					<label class="form-label tx-12">من تاريخ</label>
-					<input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
+				<div class="col-md-5 col-sm-12 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">الفترة الزمنية (تاريخ فتح الوردية):</label>
+					<div class="input-group">
+						<input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" title="من تاريخ">
+						<div class="input-group-prepend input-group-append">
+							<span class="input-group-text"><i class="fas fa-arrow-left"></i></span>
+						</div>
+						<input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" title="إلى تاريخ">
+					</div>
 				</div>
-				<div class="col-lg-2 col-md-6 mb-2">
-					<label class="form-label tx-12">إلى تاريخ</label>
-					<input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
-				</div>
-				<div class="col-lg-2 col-md-12 mb-2 d-flex align-items-end">
-					<button type="submit" class="btn btn-primary ml-2 flex-grow-1">
-						<i class="fas fa-filter ml-1"></i> تصفية
+
+				<div class="col-12 text-left mt-2">
+					<button type="submit" class="btn btn-primary font-weight-bold">
+						<i class="fas fa-search ml-1"></i> تصفية النتائج
 					</button>
-					<a href="{{ route('shifts.index') }}" class="btn btn-secondary">
-						<i class="fas fa-redo"></i>
+					<a href="{{ route('shifts.index') }}" class="btn btn-outline-secondary font-weight-bold">
+						<i class="fas fa-times ml-1"></i> إلغاء التصفية
 					</a>
 				</div>
 			</div>

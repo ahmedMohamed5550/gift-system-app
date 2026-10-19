@@ -29,7 +29,13 @@ class ReturnController extends Controller
      */
     public function index(Request $request): View
     {
+        $user = Auth::user();
         $query = SaleReturn::query()->with(['sale', 'user', 'shift', 'items.product']);
+
+        // Non-owner employees only see their own returns
+        if (! $user->isOwner()) {
+            $query->where('user_id', $user->id);
+        }
 
         // Search by return number, original invoice number, or reason
         if ($search = trim($request->input('search', ''))) {
@@ -40,27 +46,23 @@ class ReturnController extends Controller
             });
         }
 
-        // Filter by status
         if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
 
-        // Filter by refund method
         if ($refundMethod = $request->input('refund_method')) {
             $query->where('refund_method', $refundMethod);
         }
 
-        // Filter by shift
         if ($shiftId = $request->input('shift_id')) {
             $query->where('shift_id', $shiftId);
         }
 
-        // Filter by responsible cashier
-        if ($userId = $request->input('user_id')) {
+        // Filter by responsible cashier (only owners can filter by other cashiers)
+        if ($user->isOwner() && $userId = $request->input('user_id')) {
             $query->where('user_id', $userId);
         }
 
-        // Date range filters
         if ($dateFrom = $request->input('date_from')) {
             $query->whereDate('created_at', '>=', $dateFrom);
         }
@@ -71,11 +73,16 @@ class ReturnController extends Controller
 
         $returns = $query->latest('id')->paginate(15)->withQueryString();
 
-        // Metrics for KPI cards
-        $metrics = $this->returnService->getReturnMetrics();
+        // Metrics for KPI cards (scoped to user if employee, store-wide if owner)
+        $metrics = $this->returnService->getReturnMetrics($user);
 
-        $shifts = Shift::latest('id')->limit(30)->get(['id', 'opened_at', 'user_id']);
-        $users = User::orderBy('name')->get(['id', 'name']);
+        $shifts = $user->isOwner()
+            ? Shift::latest('id')->limit(30)->get(['id', 'opened_at', 'user_id'])
+            : Shift::where('user_id', $user->id)->latest('id')->limit(30)->get(['id', 'opened_at', 'user_id']);
+
+        $users = $user->isOwner()
+            ? User::orderBy('name')->get(['id', 'name'])
+            : collect([$user]);
 
         return view('returns.index', compact('returns', 'metrics', 'shifts', 'users'));
     }
@@ -172,6 +179,8 @@ class ReturnController extends Controller
      */
     public function show(SaleReturn $return): View
     {
+        abort_if(! Auth::user()->isOwner() && $return->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية للوصول إلى هذا المرتجع.');
+
         $return->load([
             'sale.user',
             'user',
@@ -190,6 +199,8 @@ class ReturnController extends Controller
      */
     public function print(SaleReturn $return): View
     {
+        abort_if(! Auth::user()->isOwner() && $return->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لطباعة هذا المرتجع.');
+
         $return->load([
             'sale.user',
             'user',
@@ -205,6 +216,8 @@ class ReturnController extends Controller
      */
     public function cancel(CancelReturnRequest $request, SaleReturn $return): RedirectResponse
     {
+        abort_if(! Auth::user()->isOwner() && $return->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لإلغاء هذا المرتجع.');
+
         $this->returnService->cancelReturn(
             return: $return,
             user: Auth::user(),

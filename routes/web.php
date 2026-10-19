@@ -17,22 +17,48 @@ use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to dashboard (guests will be redirected to login by auth middleware)
+// Redirect root: if authenticated employee -> POS, if authenticated owner -> dashboard, if guest -> dashboard (which redirects to login)
 Route::get('/', function () {
+    if (auth()->check()) {
+        return auth()->user()->isOwner()
+            ? redirect()->route('dashboard')
+            : redirect()->route('pos.index');
+    }
     return redirect()->route('dashboard');
 });
 
 // Authenticated and active routes
 Route::middleware(['auth', 'active'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Owner-Only Management & Analytics Routes
+    Route::middleware('owner')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // 1. User Management Routes
+        Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::resource('users', UserController::class);
+
+        // 10. Reports & Analytics Routes
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])->name('index');
+            Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+            Route::get('/payment-methods', [ReportController::class, 'paymentMethods'])->name('payment-methods');
+            Route::get('/products', [ReportController::class, 'products'])->name('products');
+            Route::get('/employees', [ReportController::class, 'employees'])->name('employees');
+            Route::get('/shifts', [ReportController::class, 'shifts'])->name('shifts');
+            Route::get('/expenses', [ReportController::class, 'expenses'])->name('expenses');
+            Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
+            Route::get('/low-stock', [ReportController::class, 'lowStock'])->name('low-stock');
+            Route::get('/profit', [ReportController::class, 'profit'])->name('profit');
+        });
+
+        // 11. Activity & Audit Logs Routes (Strictly Read-Only)
+        Route::get('activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
+        Route::get('activity-logs/{activityLog}', [\App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity-logs.show');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // 1. User Management Routes
-    Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-    Route::resource('users', UserController::class);
 
     // 2. Categories Routes
     Route::patch('categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
@@ -84,24 +110,6 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::patch('returns/{return}/cancel', [ReturnController::class, 'cancel'])->name('returns.cancel');
     Route::get('returns/{return}', [ReturnController::class, 'show'])->name('returns.show');
 
-    // 10. Reports & Analytics Routes
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', [ReportController::class, 'index'])->name('index');
-        Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
-        Route::get('/payment-methods', [ReportController::class, 'paymentMethods'])->name('payment-methods');
-        Route::get('/products', [ReportController::class, 'products'])->name('products');
-        Route::get('/employees', [ReportController::class, 'employees'])->name('employees');
-        Route::get('/shifts', [ReportController::class, 'shifts'])->name('shifts');
-        Route::get('/expenses', [ReportController::class, 'expenses'])->name('expenses');
-        Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
-        Route::get('/low-stock', [ReportController::class, 'lowStock'])->name('low-stock');
-        Route::get('/profit', [ReportController::class, 'profit'])->name('profit');
-    });
-
-    // 11. Activity & Audit Logs Routes (Strictly Read-Only)
-    Route::get('activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
-    Route::get('activity-logs/{activityLog}', [\App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity-logs.show');
-
     // 12. General Notes Management Routes
     Route::patch('notes/{note}/complete', [NoteController::class, 'complete'])->name('notes.complete');
     Route::patch('notes/{note}/cancel', [NoteController::class, 'cancel'])->name('notes.cancel');
@@ -112,6 +120,6 @@ Route::middleware(['auth', 'active'])->group(function () {
 require __DIR__.'/auth.php';
 
 // Protected template explorer for admin views
-Route::middleware(['auth', 'active'])->group(function () {
+Route::middleware(['auth', 'active', 'owner'])->group(function () {
     Route::get('/{page}', [AdminController::class, 'index'])->where('page', '.*')->name('admin');
 });

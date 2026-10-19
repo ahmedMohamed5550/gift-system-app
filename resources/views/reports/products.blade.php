@@ -125,7 +125,7 @@
 </div>
 
 <!-- Detailed Table -->
-<div class="card border shadow-sm">
+<div class="card border shadow-sm" id="live-search-container">
 	<div class="card-header pb-0 d-flex justify-content-between align-items-center">
 		<h5 class="card-title mb-0 font-weight-bold text-dark">
 			<i class="fas fa-list ml-1 text-primary"></i> بيان مبيعات وأرباح الأصناف للفترة

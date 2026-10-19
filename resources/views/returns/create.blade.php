@@ -67,25 +67,32 @@
 	</div>
 	<div class="card-body">
 		<form method="GET" action="{{ route('returns.create') }}">
-			<div class="row align-items-end">
-				<div class="col-lg-6 col-md-8 mb-2">
-					<label class="form-label font-weight-bold text-dark">
+			<div class="row">
+				<div class="col-lg-8 col-md-10 col-12">
+					<label class="form-label font-weight-bold text-dark mb-2">
 						رقم فاتورة المبيعات المراد إرجاعها: <span class="text-danger">*</span>
 					</label>
-					<div class="input-group input-group-lg">
+					<div class="input-group input-group-lg shadow-sm">
 						<div class="input-group-prepend">
-							<span class="input-group-text bg-white"><i class="fas fa-receipt text-primary"></i></span>
+							<span class="input-group-text bg-white"><i class="fas fa-receipt text-primary tx-18"></i></span>
 						</div>
 						<input type="text" name="invoice" class="form-control font-weight-bold"
-							   placeholder="أدخل رقم الفاتورة (مثال: INV-GF-123)"
+							   placeholder="أدخل رقم الفاتورة (مثال: INV-GF-123)..."
 							   value="{{ $searchQuery }}" required autofocus>
+						<div class="input-group-append">
+							<button type="submit" class="btn btn-primary font-weight-bold px-4">
+								<i class="fas fa-search ml-1"></i> بحث عن الفاتورة
+							</button>
+							@if(!empty($searchQuery))
+								<a href="{{ route('returns.create') }}" class="btn btn-outline-secondary font-weight-bold px-3 d-flex align-items-center" title="إلغاء البحث">
+									<i class="fas fa-times ml-1"></i> إلغاء
+								</a>
+							@endif
+						</div>
 					</div>
-					<small class="text-muted tx-12">يمكنك إدخال رقم الفاتورة كاملاً.</small>
-				</div>
-				<div class="col-lg-3 col-md-4 mb-2">
-					<button type="submit" class="btn btn-primary btn-lg btn-block font-weight-bold">
-						<i class="fas fa-search ml-1"></i> بحث عن الفاتورة
-					</button>
+					<small class="text-muted tx-12 mt-2 d-block">
+						<i class="fas fa-info-circle ml-1 text-primary"></i> يمكنك إدخال رقم الفاتورة كاملاً أو البحث بالباركود لعرض الأصناف المتاحة للإرجاع.
+					</small>
 				</div>
 			</div>
 		</form>

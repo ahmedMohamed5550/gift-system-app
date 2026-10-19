@@ -135,16 +135,21 @@
 <div class="card mb-3">
 	<div class="card-body py-3">
 		<form method="GET" action="{{ route('sales.index') }}">
-			<div class="row row-sm align-items-end">
+			<div class="row row-sm">
 				<!-- Search -->
-				<div class="col-lg-3 col-md-6 mb-2">
-					<label class="form-label tx-12 font-weight-semibold">بحث برقم الفاتورة أو الكاشير</label>
-					<input type="text" name="search" class="form-control" placeholder="رقم الفاتورة أو اسم الكاشير..." value="{{ request('search') }}">
+				<div class="col-md-3 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">بحث برقم الفاتورة أو الكاشير:</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-search"></i></span>
+						</div>
+						<input type="text" name="search" class="form-control" placeholder="رقم الفاتورة أو اسم الكاشير..." value="{{ request('search') }}">
+					</div>
 				</div>
 
 				<!-- Payment Method -->
-				<div class="col-lg-2 col-md-3 mb-2">
-					<label class="form-label tx-12 font-weight-semibold">طريقة الدفع</label>
+				<div class="col-md-2 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">طريقة الدفع:</label>
 					<select name="payment_method" class="form-control">
 						<option value="">-- كل الطرق --</option>
 						<option value="cash" {{ request('payment_method') === 'cash' ? 'selected' : '' }}>نقداً (كاش)</option>
@@ -154,8 +159,8 @@
 				</div>
 
 				<!-- Status -->
-				<div class="col-lg-2 col-md-3 mb-2">
-					<label class="form-label tx-12 font-weight-semibold">حالة الفاتورة</label>
+				<div class="col-md-2 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">حالة الفاتورة:</label>
 					<select name="status" class="form-control">
 						<option value="">-- كل الحالات --</option>
 						<option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>مكتملة</option>
@@ -164,8 +169,8 @@
 				</div>
 
 				<!-- Cashier -->
-				<div class="col-lg-2 col-md-4 mb-2">
-					<label class="form-label tx-12 font-weight-semibold">الكاشير</label>
+				<div class="col-md-2 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">الكاشير:</label>
 					<select name="user_id" class="form-control">
 						<option value="">-- كل المستخدمين --</option>
 						@foreach($users as $u)
@@ -176,26 +181,25 @@
 					</select>
 				</div>
 
-				<!-- Date From -->
-				<div class="col-lg-1 col-md-4 mb-2">
-					<label class="form-label tx-12 font-weight-semibold">من تاريخ</label>
-					<input type="date" name="date_from" class="form-control px-1" value="{{ request('date_from') }}">
+				<!-- Date Range -->
+				<div class="col-md-3 col-sm-6 mb-2">
+					<label class="form-label tx-12 font-weight-semibold">الفترة الزمنية:</label>
+					<div class="input-group">
+						<input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" title="من تاريخ">
+						<div class="input-group-prepend input-group-append">
+							<span class="input-group-text"><i class="fas fa-arrow-left"></i></span>
+						</div>
+						<input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" title="إلى تاريخ">
+					</div>
 				</div>
 
-				<!-- Date To & Submit -->
-				<div class="col-lg-2 col-md-4 mb-2 d-flex" style="gap: 5px;">
-					<div class="flex-fill">
-						<label class="form-label tx-12 font-weight-semibold">إلى تاريخ</label>
-						<input type="date" name="date_to" class="form-control px-1" value="{{ request('date_to') }}">
-					</div>
-					<div class="d-flex align-items-end">
-						<button type="submit" class="btn btn-primary" title="تطبيق الفلتر">
-							<i class="fas fa-filter"></i>
-						</button>
-						<a href="{{ route('sales.index') }}" class="btn btn-outline-secondary mr-1" title="إعادة ضبط">
-							<i class="fas fa-undo"></i>
-						</a>
-					</div>
+				<div class="col-12 text-left mt-2">
+					<button type="submit" class="btn btn-primary font-weight-bold">
+						<i class="fas fa-search ml-1"></i> تصفية النتائج
+					</button>
+					<a href="{{ route('sales.index') }}" class="btn btn-outline-secondary font-weight-bold">
+						<i class="fas fa-times ml-1"></i> إلغاء التصفية
+					</a>
 				</div>
 			</div>
 		</form>
@@ -203,7 +207,7 @@
 </div>
 
 <!-- Sales Table Card -->
-<div class="card">
+<div class="card" id="live-search-container">
 	<div class="card-header pb-0 d-flex justify-content-between align-items-center">
 		<h4 class="card-title mg-b-0"><i class="fas fa-list-alt ml-1 text-primary"></i> قائمة الفواتير</h4>
 		<span class="tx-12 text-muted">إجمالي الفواتير المسجلة: {{ $sales->total() }}</span>

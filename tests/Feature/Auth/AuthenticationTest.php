@@ -20,9 +20,28 @@ class AuthenticationTest extends TestCase
         $response->assertSee('كلمة المرور');
     }
 
-    public function test_active_users_can_authenticate_using_username(): void
+    public function test_active_owners_can_authenticate_and_redirect_to_dashboard(): void
     {
-        $user = User::factory()->create([
+        $user = User::factory()->owner()->create([
+            'username' => 'owner1',
+            'password' => bcrypt('secret123'),
+            'is_active' => true,
+        ]);
+
+        $response = $this->post('/login', [
+            'username' => 'owner1',
+            'password' => 'secret123',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('dashboard', absolute: false));
+
+        $this->assertNotNull($user->fresh()->last_login_at);
+    }
+
+    public function test_active_employees_can_authenticate_and_redirect_to_pos(): void
+    {
+        $user = User::factory()->employee()->create([
             'username' => 'cashier1',
             'password' => bcrypt('secret123'),
             'is_active' => true,
@@ -34,9 +53,29 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('pos.index', absolute: false));
 
         $this->assertNotNull($user->fresh()->last_login_at);
+    }
+
+    public function test_active_employees_redirected_to_pos_even_if_intended_url_was_dashboard(): void
+    {
+        $user = User::factory()->employee()->create([
+            'username' => 'cashier2',
+            'password' => bcrypt('secret123'),
+            'is_active' => true,
+        ]);
+
+        // Attempt accessing dashboard as guest, setting url.intended to dashboard
+        $this->get('/dashboard')->assertRedirect('/login');
+
+        $response = $this->post('/login', [
+            'username' => 'cashier2',
+            'password' => 'secret123',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('pos.index', absolute: false));
     }
 
     public function test_inactive_users_cannot_authenticate(): void
@@ -97,7 +136,7 @@ class AuthenticationTest extends TestCase
 
     public function test_deactivated_logged_in_user_is_logged_out_by_middleware(): void
     {
-        $user = User::factory()->create(['is_active' => true]);
+        $user = User::factory()->owner()->create(['is_active' => true]);
 
         // Now deactivate user
         $user->is_active = false;

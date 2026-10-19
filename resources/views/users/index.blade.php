@@ -196,7 +196,7 @@
 </div>
 
 <!-- Users Table Card -->
-<div class="card">
+<div class="card" id="live-search-container">
 	<div class="card-header pb-0">
 		<div class="d-flex justify-content-between align-items-center">
 			<h4 class="card-title mg-b-0">سجل المستخدمين</h4>

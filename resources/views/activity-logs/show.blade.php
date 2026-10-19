@@ -1,20 +1,20 @@
 @extends('layouts.master')
 
-@section('title', 'تفاصيل سجل التدقيق #' . $activityLog->id . ' - متجر بيت الهدايا')
+@section('title', 'تفاصيل سجل العمليات والنشاطات #' . $activityLog->id . ' - متجر بيت الهدايا')
 
 @section('page-header')
 <div class="breadcrumb-header justify-content-between mb-3">
 	<div class="my-auto">
 		<div class="d-flex align-items-center">
 			<h4 class="content-title mb-0 my-auto text-primary">
-				<i class="fas fa-search-plus ml-2"></i>تفاصيل سجل التدقيق رقم #{{ $activityLog->id }}
+				<i class="fas fa-search-plus ml-2"></i>تفاصيل سجل العمليات والنشاطات رقم #{{ $activityLog->id }}
 			</h4>
-			<span class="text-muted mt-1 tx-13 mr-2 mb-0">/ تدقيق تفصيلي للتغييرات والقيم المسجلة</span>
+			<span class="text-muted mt-1 tx-13 mr-2 mb-0">/ رصد تفصيلي للتغييرات والقيم المسجلة</span>
 		</div>
 	</div>
 	<div class="d-flex my-xl-auto right-content">
 		<a href="{{ route('activity-logs.index') }}" class="btn btn-outline-primary font-weight-bold ml-2">
-			<i class="fas fa-arrow-right ml-1"></i> العودة لسجل التدقيق
+			<i class="fas fa-arrow-right ml-1"></i> العودة لسجل العمليات والنشاطات
 		</a>
 		<button type="button" onclick="window.print()" class="btn btn-outline-secondary font-weight-bold">
 			<i class="fas fa-print ml-1"></i> طباعة التقرير
@@ -73,7 +73,7 @@
 		<div class="card h-100 shadow-sm border border-danger-light">
 			<div class="card-header bg-danger-transparent py-2">
 				<h6 class="card-title mb-0 font-weight-bold text-danger">
-					<i class="fas fa-undo-alt ml-1"></i> القيم السابقة قبل العملية (Old Values)
+					<i class="fas fa-undo-alt ml-1"></i> القيم السابقة قبل العملية
 				</h6>
 			</div>
 			<div class="card-body">
@@ -82,7 +82,7 @@
 						<table class="table table-sm table-bordered mb-3">
 							<thead class="thead-light">
 								<tr>
-									<th>الحقل (Field)</th>
+									<th>الحقل</th>
 									<th>القيمة السابقة</th>
 								</tr>
 							</thead>
@@ -123,7 +123,7 @@
 		<div class="card h-100 shadow-sm border border-success-light">
 			<div class="card-header bg-success-transparent py-2">
 				<h6 class="card-title mb-0 font-weight-bold text-success">
-					<i class="fas fa-check-circle ml-1"></i> القيم الجديدة المسجلة (New Values)
+					<i class="fas fa-check-circle ml-1"></i> القيم الجديدة المسجلة
 				</h6>
 			</div>
 			<div class="card-body">
@@ -132,7 +132,7 @@
 						<table class="table table-sm table-bordered mb-3">
 							<thead class="thead-light">
 								<tr>
-									<th>الحقل (Field)</th>
+									<th>الحقل</th>
 									<th>القيمة الجديدة</th>
 								</tr>
 							</thead>

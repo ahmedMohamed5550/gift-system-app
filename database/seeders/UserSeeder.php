@@ -28,5 +28,15 @@ class UserSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+
+        User::firstOrCreate(
+            ['username' => 'cashier2'],
+            [
+                'name' => ' 2 موظف مبيعات',
+                'password' => 'password',
+                'role' => 'employee',
+                'is_active' => true,
+            ]
+        );
     }
 }

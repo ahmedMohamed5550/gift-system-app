@@ -186,7 +186,7 @@
 </div>
 
 <!-- Stock Inventory Table Card -->
-<div class="card">
+<div class="card" id="live-search-container">
 	<div class="card-header pb-0 d-flex justify-content-between align-items-center">
 		<h4 class="card-title mg-b-0"><i class="fas fa-warehouse ml-1 text-primary"></i> رصيد المخزون الحالي للمنتجات</h4>
 		<span class="tx-12 text-muted">إجمالي المنتجات المعروضة: {{ $products->total() }}</span>

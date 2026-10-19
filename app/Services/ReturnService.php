@@ -28,11 +28,8 @@ class ReturnService
      */
     public function generateUniqueReturnNumber(): string
     {
-        $prefix = 'RET-' . now()->format('Ymd') . '-';
-
         do {
-            $random = strtoupper(Str::random(4));
-            $returnNumber = $prefix . $random;
+            $returnNumber = 'RET-GF-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4));
         } while (SaleReturn::where('return_number', $returnNumber)->exists());
 
         return $returnNumber;
@@ -100,7 +97,6 @@ class ReturnService
      */
     public function createReturn(array $data, User $user, ?Shift $shift = null): SaleReturn
     {
-        // 1. Shift validation
         if (!$shift) {
             $shift = $this->shiftService->getActiveShift($user);
         }
@@ -111,7 +107,6 @@ class ReturnService
             ]);
         }
 
-        // 2. Validate sale existence
         $saleId = $data['sale_id'] ?? null;
         if (!$saleId) {
             throw ValidationException::withMessages([
@@ -119,7 +114,6 @@ class ReturnService
             ]);
         }
 
-        // 3. Validate items input
         $itemsData = $data['items'] ?? [];
         if (empty($itemsData) || !is_array($itemsData)) {
             throw ValidationException::withMessages([
@@ -406,15 +400,20 @@ class ReturnService
     /**
      * Get summary metrics for returns dashboard/index.
      */
-    public function getReturnMetrics(): array
+    public function getReturnMetrics(?User $user = null): array
     {
+        $query = SaleReturn::query();
+        if ($user && ! $user->isOwner()) {
+            $query->where('user_id', $user->id);
+        }
+
         return [
-            'total_count' => SaleReturn::count(),
-            'approved_count' => SaleReturn::where('status', 'approved')->count(),
-            'cancelled_count' => SaleReturn::where('status', 'cancelled')->count(),
-            'total_refunded' => (float) (SaleReturn::where('status', 'approved')->sum('total_amount') ?? 0),
-            'cash_refunded' => (float) (SaleReturn::where('status', 'approved')->where('refund_method', 'cash')->sum('total_amount') ?? 0),
-            'electronic_refunded' => (float) (SaleReturn::where('status', 'approved')->whereIn('refund_method', ['vodafone_cash', 'instapay'])->sum('total_amount') ?? 0),
+            'total_count' => (clone $query)->count(),
+            'approved_count' => (clone $query)->where('status', 'approved')->count(),
+            'cancelled_count' => (clone $query)->where('status', 'cancelled')->count(),
+            'total_refunded' => (float) ((clone $query)->where('status', 'approved')->sum('total_amount') ?? 0),
+            'cash_refunded' => (float) ((clone $query)->where('status', 'approved')->where('refund_method', 'cash')->sum('total_amount') ?? 0),
+            'electronic_refunded' => (float) ((clone $query)->where('status', 'approved')->whereIn('refund_method', ['vodafone_cash', 'instapay'])->sum('total_amount') ?? 0),
         ];
     }
 }

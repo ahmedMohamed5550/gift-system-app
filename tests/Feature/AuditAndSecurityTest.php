@@ -407,13 +407,13 @@ class AuditAndSecurityTest extends TestCase
     {
         $this->actingAs($this->employee);
 
-        $response = $this->get(route('dashboard'));
+        $response = $this->get(route('pos.index'));
         $response->assertStatus(200);
 
         // Deactivate user in database
         $this->employee->update(['is_active' => false]);
 
-        $nextResponse = $this->get(route('dashboard'));
+        $nextResponse = $this->get(route('pos.index'));
         $nextResponse->assertRedirect(route('login'));
         $this->assertGuest();
     }

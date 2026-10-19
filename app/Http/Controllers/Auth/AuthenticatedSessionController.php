@@ -28,6 +28,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+
+        // If the authenticated user is an employee, direct them immediately to the POS terminal
+        if ($user->isEmployee()) {
+            $request->session()->forget('url.intended');
+            return redirect()->route('pos.index');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

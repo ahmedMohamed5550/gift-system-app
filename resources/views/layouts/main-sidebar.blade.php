@@ -2,10 +2,10 @@
 		<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 		<aside class="app-sidebar sidebar-scroll">
 			<div class="main-sidebar-header active">
-				<a class="desktop-logo logo-light active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo" alt="logo"></a>
-				<a class="desktop-logo logo-dark active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="main-logo dark-theme" alt="logo"></a>
-				<a class="logo-icon mobile-logo icon-light active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="logo-icon" alt="logo"></a>
-				<a class="logo-icon mobile-logo icon-dark active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="logo-icon dark-theme" alt="logo"></a>
+				<a class="desktop-logo logo-light active" href="{{ auth()->check() && auth()->user()->isOwner() ? route('dashboard') : route('pos.index') }}"><img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo" alt="logo"></a>
+				<a class="desktop-logo logo-dark active" href="{{ auth()->check() && auth()->user()->isOwner() ? route('dashboard') : route('pos.index') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="main-logo dark-theme" alt="logo"></a>
+				<a class="logo-icon mobile-logo icon-light active" href="{{ auth()->check() && auth()->user()->isOwner() ? route('dashboard') : route('pos.index') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="logo-icon" alt="logo"></a>
+				<a class="logo-icon mobile-logo icon-dark active" href="{{ auth()->check() && auth()->user()->isOwner() ? route('dashboard') : route('pos.index') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="logo-icon dark-theme" alt="logo"></a>
 			</div>
 			<div class="main-sidemenu">
 				<div class="app-sidebar__user clearfix">
@@ -20,6 +20,7 @@
 					</div>
 				</div>
 				<ul class="side-menu">
+					@if(auth()->check() && auth()->user()->isOwner())
 					<li class="side-item side-item-category">الرئيسية</li>
 					<li class="slide">
 						<a class="side-menu__item {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
@@ -27,6 +28,7 @@
 							<span class="side-menu__label">لوحة التحكم</span>
 						</a>
 					</li>
+					@endif
 
 					<li class="side-item side-item-category">إدارة البيانات الأساسية</li>
 
@@ -84,6 +86,7 @@
 					</li>
 
 					<!-- Users Management -->
+					@if(auth()->check() && auth()->user()->isOwner())
 					<li class="slide {{ request()->routeIs('users.*') ? 'is-expanded active' : '' }}">
 						<a class="side-menu__item {{ request()->routeIs('users.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
 							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8c.28 0 .5-.22.5-.5 0-.16-.08-.28-.14-.35-.41-.46-.63-1.05-.63-1.65 0-1.38 1.12-2.5 2.5-2.5H16c2.21 0 4-1.79 4-4 0-3.86-3.59-7-8-7z" opacity=".3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
@@ -95,6 +98,7 @@
 							<li><a class="slide-item {{ request()->routeIs('users.create') ? 'active' : '' }}" href="{{ route('users.create') }}">إضافة مستخدم جديد</a></li>
 						</ul>
 					</li>
+					@endif
 
 					<li class="side-item side-item-category">المبيعات والمالية</li>
 
@@ -173,6 +177,7 @@
 					</li>
 
 					<!-- Reports & Analytics -->
+					@if(auth()->check() && auth()->user()->isOwner())
 					<li class="side-item side-item-category">التقارير والتحليلات</li>
 					<li class="slide {{ request()->routeIs('reports.*') ? 'is-expanded active' : '' }}">
 						<a class="side-menu__item {{ request()->routeIs('reports.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
@@ -193,6 +198,7 @@
 							<li><a class="slide-item {{ request()->routeIs('reports.profit') ? 'active' : '' }}" href="{{ route('reports.profit') }}">تقرير الأرباح والخسائر</a></li>
 						</ul>
 					</li>
+					@endif
 
 					<!-- Activity & Audit Logs -->
 					@if(auth()->check() && auth()->user()->isOwner())
@@ -200,7 +206,7 @@
 					<li class="slide {{ request()->routeIs('activity-logs.*') ? 'active' : '' }}">
 						<a class="side-menu__item {{ request()->routeIs('activity-logs.*') ? 'active' : '' }}" href="{{ route('activity-logs.index') }}">
 							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4.14L6 6.82v4.8c0 3.88 2.56 7.51 6 8.51 3.44-1 6-4.63 6-8.51v-4.8l-6-2.68z" opacity=".3"/><path d="M12 2L4 5.5v6.12c0 5.11 3.41 9.89 8 11.12 4.59-1.23 8-6.01 8-11.12V5.5L12 2zm6 9.62c0 3.88-2.56 7.51-6 8.51-3.44-1-6-4.63-6-8.51v-4.8l6-2.68 6 2.68v4.8z"/></svg>
-							<span class="side-menu__label">سجل التدقيق والنشاطات</span>
+							<span class="side-menu__label">سجل العمليات والنشاطات</span>
 							<span class="badge badge-info side-badge">أمان</span>
 						</a>
 					</li>

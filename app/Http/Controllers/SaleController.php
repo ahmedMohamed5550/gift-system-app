@@ -22,9 +22,13 @@ class SaleController extends Controller
      */
     public function index(Request $request): View
     {
+        $user = Auth::user();
         $query = Sale::query()->with(['user', 'shift', 'items.product']);
 
-        // Search by invoice number or customer/notes
+        if (! $user->isOwner()) {
+            $query->where('user_id', $user->id);
+        }
+
         if ($search = trim($request->input('search', ''))) {
             $query->where(function ($q) use ($search) {
                 $q->where('invoice_number', 'like', "%{$search}%")
@@ -32,23 +36,20 @@ class SaleController extends Controller
             });
         }
 
-        // Filter by payment method
         if ($paymentMethod = $request->input('payment_method')) {
             $query->where('payment_method', $paymentMethod);
         }
 
-        // Filter by status
         if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
 
-        // Filter by shift
         if ($shiftId = $request->input('shift_id')) {
             $query->where('shift_id', $shiftId);
         }
 
-        // Filter by cashier / user
-        if ($userId = $request->input('user_id')) {
+        // Filter by cashier / user (owners only can view other cashiers)
+        if ($user->isOwner() && $userId = $request->input('user_id')) {
             $query->where('user_id', $userId);
         }
 
@@ -61,21 +62,30 @@ class SaleController extends Controller
             $query->whereDate('created_at', '<=', $dateTo);
         }
 
-        // Paginated result
         $sales = $query->latest('id')->paginate(15)->withQueryString();
 
-        // Financial KPIs (based on filtered/all completed sales)
+        // Financial KPIs (scoped to user if employee, store-wide if owner)
+        $statsQuery = Sale::query();
+        if (! $user->isOwner()) {
+            $statsQuery->where('user_id', $user->id);
+        }
+
         $stats = [
-            'total_sales_amount' => (float) Sale::where('status', 'completed')->sum('total'),
-            'completed_count' => Sale::where('status', 'completed')->count(),
-            'cash_sales_amount' => (float) Sale::where('status', 'completed')->where('payment_method', 'cash')->sum('total'),
-            'electronic_sales_amount' => (float) Sale::where('status', 'completed')->whereIn('payment_method', ['vodafone_cash', 'instapay'])->sum('total'),
-            'cancelled_count' => Sale::where('status', 'cancelled')->count(),
-            'cancelled_amount' => (float) Sale::where('status', 'cancelled')->sum('total'),
+            'total_sales_amount' => (float) (clone $statsQuery)->where('status', 'completed')->sum('total'),
+            'completed_count' => (clone $statsQuery)->where('status', 'completed')->count(),
+            'cash_sales_amount' => (float) (clone $statsQuery)->where('status', 'completed')->where('payment_method', 'cash')->sum('total'),
+            'electronic_sales_amount' => (float) (clone $statsQuery)->where('status', 'completed')->whereIn('payment_method', ['vodafone_cash', 'instapay'])->sum('total'),
+            'cancelled_count' => (clone $statsQuery)->where('status', 'cancelled')->count(),
+            'cancelled_amount' => (float) (clone $statsQuery)->where('status', 'cancelled')->sum('total'),
         ];
 
-        $shifts = Shift::latest('id')->limit(30)->get(['id', 'opened_at', 'user_id']);
-        $users = User::orderBy('name')->get(['id', 'name']);
+        $shifts = $user->isOwner()
+            ? Shift::latest('id')->limit(30)->get(['id', 'opened_at', 'user_id'])
+            : Shift::where('user_id', $user->id)->latest('id')->limit(30)->get(['id', 'opened_at', 'user_id']);
+
+        $users = $user->isOwner()
+            ? User::orderBy('name')->get(['id', 'name'])
+            : collect([$user]);
 
         return view('sales.index', compact('sales', 'stats', 'shifts', 'users'));
     }
@@ -85,6 +95,8 @@ class SaleController extends Controller
      */
     public function show(Sale $sale): View
     {
+        abort_if(! Auth::user()->isOwner() && $sale->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية للوصول إلى هذه الفاتورة.');
+
         $sale->load([
             'user',
             'shift.user',
@@ -102,6 +114,8 @@ class SaleController extends Controller
      */
     public function print(Sale $sale): View
     {
+        abort_if(! Auth::user()->isOwner() && $sale->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لطباعة هذه الفاتورة.');
+
         $sale->load([
             'user',
             'shift.user',
@@ -116,6 +130,8 @@ class SaleController extends Controller
      */
     public function cancel(Request $request, Sale $sale): RedirectResponse
     {
+        abort_if(! Auth::user()->isOwner() && $sale->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لإلغاء هذه الفاتورة.');
+
         $request->validate([
             'reason' => ['nullable', 'string', 'max:500'],
         ]);

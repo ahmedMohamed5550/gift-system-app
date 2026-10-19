@@ -145,7 +145,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"><i class="fas fa-search"></i></span>
 						</div>
-						<input type="text" name="search" class="form-control" placeholder="مثال: RET-... أو INV-..." value="{{ request('search') }}">
+						<input type="text" name="search" class="form-control" placeholder="مثال: RET-...  INV-..." value="{{ request('search') }}">
 					</div>
 				</div>
 
@@ -205,7 +205,7 @@
 </div>
 
 <!-- Table Card -->
-<div class="card">
+<div class="card" id="live-search-container">
 	<div class="card-header pb-0 d-flex justify-content-between align-items-center">
 		<h5 class="card-title mb-0 font-weight-bold text-dark"><i class="fas fa-list ml-1 text-primary"></i> قائمة إشعارات المرتجعات</h5>
 		<span class="text-muted tx-13">إجمالي السجلات: {{ $returns->total() }}</span>

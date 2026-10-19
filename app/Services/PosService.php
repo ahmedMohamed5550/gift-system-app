@@ -24,18 +24,11 @@ class PosService
      */
     public function generateUniqueInvoiceNumber(): string
     {
-        return DB::transaction(function () {
-            $today = now()->toDateString();
+        do {
+            $invoiceNumber = 'INV-GF-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
+        } while (Sale::where('invoice_number', $invoiceNumber)->exists());
 
-            $last = Sale::whereDate('created_at', $today)
-                ->where('invoice_number', 'like', 'INV-GF-%')
-                ->lockForUpdate()
-                ->get(['invoice_number'])
-                ->map(fn ($sale) => (int) str_replace('INV-GF-', '', $sale->invoice_number))
-                ->max();
-
-            return 'INV-GF-' . (($last ?? 0) + 1);
-        });
+        return $invoiceNumber;
     }
 
     /**

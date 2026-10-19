@@ -290,7 +290,7 @@
 </div>
 
 <!-- Notes Table -->
-<div class="card custom-card">
+<div class="card custom-card" id="live-search-container">
 	<div class="card-header pb-0 d-flex justify-content-between align-items-center">
 		<div>
 			<h6 class="card-title mb-1 font-weight-bold">سجل وقائمة الملاحظات</h6>

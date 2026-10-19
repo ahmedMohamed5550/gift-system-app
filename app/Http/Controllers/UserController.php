@@ -12,8 +12,15 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    protected function authorizeOwner(): void
+    {
+        abort_if(! auth()->user()?->isOwner(), 403, 'عذراً، إدارة المستخدمين متاحة فقط لمالك المتجر.');
+    }
+
     public function index(Request $request): View
     {
+        $this->authorizeOwner();
+
         $query = User::query();
 
         if ($search = $request->input('search')) {
@@ -45,11 +52,15 @@ class UserController extends Controller
 
     public function create(): View
     {
+        $this->authorizeOwner();
+
         return view('users.create');
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
+        $this->authorizeOwner();
+
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
@@ -75,11 +86,15 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
+        $this->authorizeOwner();
+
         return view('users.edit', compact('user'));
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
+        $this->authorizeOwner();
+
         if (auth()->id() === $user->id && ! $request->boolean('is_active')) {
             return back()->with('error', 'لا يمكنك إلغاء تفعيل حسابك الحالي الذي تستخدمه لتسجيل الدخول.');
         }
@@ -125,6 +140,8 @@ class UserController extends Controller
 
     public function toggleStatus(User $user): RedirectResponse
     {
+        $this->authorizeOwner();
+
         if (auth()->id() === $user->id) {
             return back()->with('error', 'لا يمكنك تغيير حالة حسابك الحالي.');
         }
@@ -150,6 +167,7 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        $this->authorizeOwner();
         if (auth()->id() === $user->id) {
             return back()->with('error', 'لا يمكنك حذف حسابك الحالي.');
         }

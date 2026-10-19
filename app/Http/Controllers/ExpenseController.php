@@ -30,7 +30,13 @@ class ExpenseController extends Controller
      */
     public function index(Request $request): View
     {
+        $user = Auth::user();
         $query = Expense::with(['user', 'shift', 'cancelledBy']);
+
+        // Non-owner employees only see their own expenses
+        if (! $user->isOwner()) {
+            $query->where('user_id', $user->id);
+        }
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -51,7 +57,7 @@ class ExpenseController extends Controller
             $query->where('shift_id', $shiftId);
         }
 
-        if ($userId = $request->input('user_id')) {
+        if ($user->isOwner() && $userId = $request->input('user_id')) {
             $query->where('user_id', $userId);
         }
 
@@ -65,17 +71,24 @@ class ExpenseController extends Controller
 
         $expenses = $query->latest('id')->paginate(15)->withQueryString();
 
+        $statsQuery = Expense::query();
+        if (! $user->isOwner()) {
+            $statsQuery->where('user_id', $user->id);
+        }
+
         $stats = [
-            'total_active' => (float) (Expense::active()->sum('amount') ?? 0),
-            'cash_active' => (float) (Expense::active()->cash()->sum('amount') ?? 0),
-            'non_cash_active' => (float) (Expense::active()->where('payment_method', '!=', 'cash')->sum('amount') ?? 0),
-            'cancelled_total' => (float) (Expense::cancelled()->sum('amount') ?? 0),
-            'active_count' => Expense::active()->count(),
-            'cancelled_count' => Expense::cancelled()->count(),
+            'total_active' => (float) ((clone $statsQuery)->active()->sum('amount') ?? 0),
+            'cash_active' => (float) ((clone $statsQuery)->active()->cash()->sum('amount') ?? 0),
+            'non_cash_active' => (float) ((clone $statsQuery)->active()->where('payment_method', '!=', 'cash')->sum('amount') ?? 0),
+            'cancelled_total' => (float) ((clone $statsQuery)->cancelled()->sum('amount') ?? 0),
+            'active_count' => (clone $statsQuery)->active()->count(),
+            'cancelled_count' => (clone $statsQuery)->cancelled()->count(),
         ];
 
         $categories = $this->expenseService->getCategories();
-        $users = User::orderBy('name')->get(['id', 'name']);
+        $users = $user->isOwner()
+            ? User::orderBy('name')->get(['id', 'name'])
+            : collect([$user]);
         $activeShift = $this->shiftService->getActiveShift(Auth::user());
 
         return view('expenses.index', compact('expenses', 'stats', 'categories', 'users', 'activeShift'));
@@ -88,7 +101,9 @@ class ExpenseController extends Controller
     {
         $categories = $this->expenseService->getCategories();
         $activeShift = $this->shiftService->getActiveShift(Auth::user());
-        $openShifts = Shift::where('status', 'open')->with('user')->get();
+        $openShifts = Auth::user()->isOwner()
+            ? Shift::where('status', 'open')->with('user')->get()
+            : Shift::where('status', 'open')->where('user_id', Auth::id())->with('user')->get();
 
         return view('expenses.create', compact('categories', 'activeShift', 'openShifts'));
     }
@@ -99,6 +114,13 @@ class ExpenseController extends Controller
     public function store(ExpenseRequest $request): RedirectResponse
     {
         $shiftId = $request->filled('shift_id') ? (int) $request->input('shift_id') : null;
+
+        if ($shiftId && ! Auth::user()->isOwner()) {
+            $shift = Shift::find($shiftId);
+            if ($shift && $shift->user_id !== Auth::id()) {
+                abort(403, 'عذراً، لا يمكنك ربط المصروف بوردية تخص موظفاً آخر.');
+            }
+        }
 
         $this->expenseService->recordExpense(
             userId: Auth::id(),
@@ -118,6 +140,8 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense): View
     {
+        abort_if(! Auth::user()->isOwner() && $expense->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية للوصول إلى هذا المصروف.');
+
         $expense->load(['user', 'shift.user', 'cancelledBy']);
 
         return view('expenses.show', compact('expense'));
@@ -128,13 +152,17 @@ class ExpenseController extends Controller
      */
     public function edit(Expense $expense): View|RedirectResponse
     {
+        abort_if(! Auth::user()->isOwner() && $expense->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لتعديل هذا المصروف.');
+
         if ($expense->is_cancelled) {
             return redirect()->route('expenses.index')
                              ->with('error', 'لا يمكن تعديل مصروف تم إلغاؤه مسبقاً.');
         }
 
         $categories = $this->expenseService->getCategories();
-        $openShifts = Shift::where('status', 'open')->with('user')->get();
+        $openShifts = Auth::user()->isOwner()
+            ? Shift::where('status', 'open')->with('user')->get()
+            : Shift::where('status', 'open')->where('user_id', Auth::id())->with('user')->get();
 
         return view('expenses.edit', compact('expense', 'categories', 'openShifts'));
     }
@@ -144,11 +172,21 @@ class ExpenseController extends Controller
      */
     public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
     {
+        abort_if(! Auth::user()->isOwner() && $expense->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لتعديل هذا المصروف.');
+
+        $shiftId = $request->filled('shift_id') ? (int) $request->input('shift_id') : null;
+        if ($shiftId && ! Auth::user()->isOwner()) {
+            $shift = Shift::find($shiftId);
+            if ($shift && $shift->user_id !== Auth::id()) {
+                abort(403, 'عذراً، لا يمكنك ربط المصروف بوردية تخص موظفاً آخر.');
+            }
+        }
+
         $this->expenseService->updateExpense($expense, [
             'category' => $request->input('category'),
             'amount' => (float) $request->input('amount'),
             'payment_method' => $request->input('payment_method'),
-            'shift_id' => $request->input('shift_id'),
+            'shift_id' => $shiftId,
             'description' => $request->input('description'),
         ]);
 
@@ -161,6 +199,8 @@ class ExpenseController extends Controller
      */
     public function cancel(CancelExpenseRequest $request, Expense $expense): RedirectResponse
     {
+        abort_if(! Auth::user()->isOwner() && $expense->user_id !== Auth::id(), 403, 'عذراً، لا تملك الصلاحية لإلغاء هذا المصروف.');
+
         $this->expenseService->cancelExpense(
             expense: $expense,
             reason: $request->input('reason'),

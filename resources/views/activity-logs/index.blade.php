@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
-@section('title', 'سجل العمليات والتدقيق (Activity Logs) - متجر بيت الهدايا')
+@section('title', 'سجل العمليات والنشاطات - متجر بيت الهدايا')
 
 @section('page-header')
 <div class="breadcrumb-header justify-content-between mb-3">
 	<div class="my-auto">
 		<div class="d-flex align-items-center">
 			<h4 class="content-title mb-0 my-auto text-primary">
-				<i class="fas fa-shield-alt ml-2"></i>سجل العمليات والتدقيق (Activity Logs)
+				<i class="fas fa-shield-alt ml-2"></i>سجل العمليات والنشاطات
 			</h4>
 			<span class="text-muted mt-1 tx-13 mr-2 mb-0">/ رصد وتوثيق كافة العمليات الإدارية، المالية، والمخزنية الحساسة بالنظام</span>
 		</div>
@@ -48,7 +48,7 @@
 	<div class="d-flex align-items-center">
 		<div class="alert-icon mr-2"><i class="fas fa-lock fa-2x"></i></div>
 		<div>
-			<h6 class="alert-heading font-weight-bold mb-1">سجل تدقيق غير قابل للتعديل أو الحذف (Immutable Audit Trail)</h6>
+			<h6 class="alert-heading font-weight-bold mb-1">سجل عمليات ونشاطات غير قابل للتعديل أو الحذف</h6>
 			<p class="mb-0 tx-12">يتم توثيق كافة العمليات تلقائياً فور حدوثها مع تسجيل اسم المستخدم المنفذ والطابع الزمني والقيم السابقة والجديدة. لا يمكن لأي مستخدم تعديل أو مسح هذه السجلات.</p>
 		</div>
 	</div>
@@ -165,7 +165,7 @@
 </div>
 
 <!-- Logs Table Card -->
-<div class="card shadow-sm border">
+<div class="card shadow-sm border" id="live-search-container">
 	<div class="card-header pb-2 d-flex justify-content-between align-items-center">
 		<h6 class="card-title mb-0 font-weight-bold text-dark">
 			<i class="fas fa-list ml-1 text-primary"></i> سجل العمليات الموثقة ({{ $logs->total() }})
@@ -252,7 +252,7 @@
 									<div class="modal-content">
 										<div class="modal-header bg-light">
 											<h6 class="modal-title font-weight-bold">
-												<i class="fas fa-history ml-1 text-primary"></i> بيانات التدقيق - عملية #{{ $log->id }} ({{ $log->action_arabic }})
+												<i class="fas fa-history ml-1 text-primary"></i> بيانات النشاط - عملية #{{ $log->id }} ({{ $log->action_arabic }})
 											</h6>
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 												<span aria-hidden="true">&times;</span>
@@ -300,7 +300,7 @@
 						<tr>
 							<td colspan="8" class="text-center py-4 text-muted">
 								<i class="fas fa-clipboard-list fa-2x mb-2 d-block text-secondary"></i>
-								لا توجد سجلات تدقيق مطابقة لمعايير البحث الحالية.
+								لا توجد سجلات عمليات أو نشاطات مطابقة لمعايير البحث الحالية.
 							</td>
 						</tr>
 					@endforelse
