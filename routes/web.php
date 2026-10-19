@@ -96,6 +96,10 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('/low-stock', [ReportController::class, 'lowStock'])->name('low-stock');
         Route::get('/profit', [ReportController::class, 'profit'])->name('profit');
     });
+
+    // 11. Activity & Audit Logs Routes (Strictly Read-Only)
+    Route::get('activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('activity-logs/{activityLog}', [\App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity-logs.show');
 });
 
 // Authentication routes (login, logout, password)

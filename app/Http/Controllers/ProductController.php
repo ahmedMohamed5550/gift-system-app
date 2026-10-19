@@ -72,7 +72,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request): RedirectResponse
     {
-        Product::create([
+        $product = Product::create([
             'name' => $request->name,
             'subcategory_id' => $request->subcategory_id,
             'description' => $request->description,
@@ -82,6 +82,21 @@ class ProductController extends Controller
             'minimum_stock' => $request->minimum_stock,
             'is_active' => $request->boolean('is_active'),
         ]);
+
+        \App\Services\ActivityLogService::log(
+            action: 'product_created',
+            subject: $product,
+            description: "تم إضافة منتج جديد للمخزون: \"{$product->name}\" بسعر بيع {$product->selling_price} ج.م وسعر شراء {$product->purchase_price} ج.م ورصيد افتتاحي {$product->stock_quantity}.",
+            newValues: [
+                'name' => $product->name,
+                'subcategory_id' => $product->subcategory_id,
+                'purchase_price' => (float) $product->purchase_price,
+                'selling_price' => (float) $product->selling_price,
+                'stock_quantity' => (float) $product->stock_quantity,
+                'minimum_stock' => (float) $product->minimum_stock,
+                'is_active' => $product->is_active,
+            ]
+        );
 
         return redirect()->route('products.index')->with('success', 'تم إضافة المنتج بنجاح إلى المخزون.');
     }
@@ -102,6 +117,16 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, Product $product): RedirectResponse
     {
+        $oldValues = [
+            'name' => $product->name,
+            'subcategory_id' => $product->subcategory_id,
+            'purchase_price' => (float) $product->purchase_price,
+            'selling_price' => (float) $product->selling_price,
+            'stock_quantity' => (float) $product->stock_quantity,
+            'minimum_stock' => (float) $product->minimum_stock,
+            'is_active' => $product->is_active,
+        ];
+
         $product->update([
             'name' => $request->name,
             'subcategory_id' => $request->subcategory_id,
@@ -113,13 +138,47 @@ class ProductController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]);
 
+        $newValues = [
+            'name' => $product->name,
+            'subcategory_id' => $product->subcategory_id,
+            'purchase_price' => (float) $product->purchase_price,
+            'selling_price' => (float) $product->selling_price,
+            'stock_quantity' => (float) $product->stock_quantity,
+            'minimum_stock' => (float) $product->minimum_stock,
+            'is_active' => $product->is_active,
+        ];
+
+        $priceNote = '';
+        if ($oldValues['selling_price'] != $newValues['selling_price'] || $oldValues['purchase_price'] != $newValues['purchase_price']) {
+            $priceNote = " (تعديل الأسعار: البيع من {$oldValues['selling_price']} إلى {$newValues['selling_price']} ج.م، الشراء من {$oldValues['purchase_price']} إلى {$newValues['purchase_price']} ج.م)";
+        }
+
+        \App\Services\ActivityLogService::log(
+            action: 'product_updated',
+            subject: $product,
+            description: "تم تحديث بيانات المنتج: \"{$product->name}\"{$priceNote}.",
+            oldValues: $oldValues,
+            newValues: $newValues
+        );
+
         return redirect()->route('products.index')->with('success', 'تم تحديث بيانات المنتج بنجاح.');
     }
 
     public function toggleStatus(Product $product): RedirectResponse
     {
+        $oldStatus = $product->is_active;
         $product->is_active = ! $product->is_active;
         $product->save();
+
+        \App\Services\ActivityLogService::log(
+            action: 'product_status_toggled',
+            subject: $product,
+            description: $product->is_active
+                ? "تم تفعيل المنتج: \"{$product->name}\"."
+                : "تم تعطيل المنتج: \"{$product->name}\".",
+            oldValues: ['is_active' => $oldStatus],
+            newValues: ['is_active' => $product->is_active]
+        );
 
         $message = $product->is_active ? 'تم تفعيل المنتج بنجاح.' : 'تم تعطيل المنتج بنجاح مع الحفاظ على سجل المبيعات والمخزون.';
 
@@ -128,7 +187,20 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
+        $oldValues = [
+            'name' => $product->name,
+            'selling_price' => (float) $product->selling_price,
+            'stock_quantity' => (float) $product->stock_quantity,
+        ];
+
         $product->delete();
+
+        \App\Services\ActivityLogService::log(
+            action: 'product_deleted',
+            subject: $product,
+            description: "تم حذف المنتج: \"{$product->name}\" مع الحفاظ على السجلات المالية والمخزنية السابقة.",
+            oldValues: $oldValues
+        );
 
         return redirect()->route('products.index')->with('success', 'تم حذف المنتج بنجاح مع الحفاظ على جميع السجلات المالية والمخزنية السابقة.');
     }

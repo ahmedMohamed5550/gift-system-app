@@ -2,6 +2,41 @@
 
 @section('title', 'الأقسام الفرعية - متجر الهدايا')
 
+@section('css')
+<style>
+	.action-btns-wrapper {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 5px;
+	}
+	.btn-action-icon {
+		width: 32px !important;
+		height: 32px !important;
+		min-width: 32px !important;
+		min-height: 32px !important;
+		padding: 0 !important;
+		display: inline-flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		border-radius: 4px !important;
+		font-size: 13px !important;
+		line-height: 1 !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: none !important;
+	}
+	.btn-action-icon i {
+		font-size: 13px !important;
+		line-height: 1 !important;
+		margin: 0 !important;
+	}
+	.btn-action-icon:hover {
+		opacity: 0.9;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+	}
+</style>
+@endsection
+
 @section('page-header')
 <div class="breadcrumb-header justify-content-between">
 	<div class="my-auto">
@@ -196,25 +231,25 @@
 							</td>
 							<td>{{ $subcategory->created_at ? $subcategory->created_at->format('Y-m-d') : '-' }}</td>
 							<td class="text-center">
-								<div class="btn-group btn-group-sm" role="group">
-									<a href="{{ route('subcategories.edit', $subcategory) }}" class="btn btn-info" title="تعديل">
+								<div class="action-btns-wrapper">
+									<a href="{{ route('subcategories.edit', $subcategory) }}" class="btn btn-sm btn-info btn-action-icon" title="تعديل">
 										<i class="fas fa-edit"></i>
 									</a>
 
 									<!-- Toggle Status -->
-									<form action="{{ route('subcategories.toggle-status', $subcategory) }}" method="POST" class="d-inline">
+									<form action="{{ route('subcategories.toggle-status', $subcategory) }}" method="POST" class="d-inline m-0 p-0">
 										@csrf
 										@method('PATCH')
-										<button type="submit" class="btn {{ $subcategory->is_active ? 'btn-warning' : 'btn-success' }}" title="{{ $subcategory->is_active ? 'تعطيل' : 'تفعيل' }}">
+										<button type="submit" class="btn btn-sm {{ $subcategory->is_active ? 'btn-warning' : 'btn-success' }} btn-action-icon" title="{{ $subcategory->is_active ? 'تعطيل' : 'تفعيل' }}">
 											<i class="fas {{ $subcategory->is_active ? 'fa-ban' : 'fa-check' }}"></i>
 										</button>
 									</form>
 
 									<!-- Delete -->
-									<form action="{{ route('subcategories.destroy', $subcategory) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا القسم الفرعي؟')">
+									<form action="{{ route('subcategories.destroy', $subcategory) }}" method="POST" class="d-inline m-0 p-0" onsubmit="return confirm('هل أنت متأكد من حذف هذا القسم الفرعي؟')">
 										@csrf
 										@method('DELETE')
-										<button type="submit" class="btn btn-danger" title="حذف">
+										<button type="submit" class="btn btn-sm btn-danger btn-action-icon" title="حذف">
 											<i class="fas fa-trash-alt"></i>
 										</button>
 									</form>

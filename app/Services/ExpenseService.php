@@ -51,7 +51,7 @@ class ExpenseService
         }
 
         return DB::transaction(function () use ($userId, $category, $amount, $paymentMethod, $description, $shiftId) {
-            return Expense::create([
+            $expense = Expense::create([
                 'user_id' => $userId,
                 'shift_id' => $shiftId,
                 'category' => trim($category),
@@ -60,6 +60,22 @@ class ExpenseService
                 'status' => 'active',
                 'description' => $description,
             ]);
+
+            \App\Services\ActivityLogService::log(
+                action: 'expense_created',
+                subject: $expense,
+                description: "تم تسجيل مصروف جديد بقيمة {$expense->amount} ج.م في بند \"{$expense->category}\" بطريقة دفع " . ($expense->payment_method_arabic ?? $expense->payment_method) . ".",
+                newValues: [
+                    'category' => $expense->category,
+                    'amount' => (float) $expense->amount,
+                    'payment_method' => $expense->payment_method,
+                    'shift_id' => $expense->shift_id,
+                    'description' => $expense->description,
+                ],
+                userId: $userId
+            );
+
+            return $expense;
         });
     }
 
@@ -83,12 +99,32 @@ class ExpenseService
         }
 
         return DB::transaction(function () use ($expense, $reason, $cancelledByUserId) {
+            $oldValues = [
+                'status' => 'active',
+                'amount' => (float) $expense->amount,
+                'category' => $expense->category,
+                'payment_method' => $expense->payment_method,
+            ];
+
             $expense->update([
                 'status' => 'cancelled',
                 'cancellation_reason' => trim($reason),
                 'cancelled_at' => now(),
                 'cancelled_by' => $cancelledByUserId,
             ]);
+
+            \App\Services\ActivityLogService::log(
+                action: 'expense_cancelled',
+                subject: $expense,
+                description: "تم إلغاء المصروف رقم #{$expense->id} بقيمة {$expense->amount} ج.م (السبب: {$reason}).",
+                oldValues: $oldValues,
+                newValues: [
+                    'status' => 'cancelled',
+                    'cancellation_reason' => trim($reason),
+                    'cancelled_by' => $cancelledByUserId,
+                ],
+                userId: $cancelledByUserId
+            );
 
             return $expense;
         });
@@ -114,7 +150,30 @@ class ExpenseService
         }
 
         return DB::transaction(function () use ($expense, $data) {
+            $oldValues = [
+                'category' => $expense->category,
+                'amount' => (float) $expense->amount,
+                'payment_method' => $expense->payment_method,
+                'description' => $expense->description,
+            ];
+
             $expense->update($data);
+
+            $newValues = [
+                'category' => $expense->category,
+                'amount' => (float) $expense->amount,
+                'payment_method' => $expense->payment_method,
+                'description' => $expense->description,
+            ];
+
+            \App\Services\ActivityLogService::log(
+                action: 'expense_updated',
+                subject: $expense,
+                description: "تم تحديث بيانات المصروف رقم #{$expense->id} بقيمة {$expense->amount} ج.م في بند \"{$expense->category}\".",
+                oldValues: $oldValues,
+                newValues: $newValues
+            );
+
             return $expense;
         });
     }

@@ -50,13 +50,25 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'is_active' => $request->boolean('is_active'),
         ]);
+
+        \App\Services\ActivityLogService::log(
+            action: 'user_created',
+            subject: $user,
+            description: "تم إنشاء حساب مستخدم جديد: {$user->name} ({$user->username}) بدور {$user->role_arabic}.",
+            newValues: [
+                'name' => $user->name,
+                'username' => $user->username,
+                'role' => $user->role,
+                'is_active' => $user->is_active,
+            ]
+        );
 
         return redirect()->route('users.index')->with('success', 'تم إنشاء حساب المستخدم بنجاح.');
     }
@@ -72,6 +84,13 @@ class UserController extends Controller
             return back()->with('error', 'لا يمكنك إلغاء تفعيل حسابك الحالي الذي تستخدمه لتسجيل الدخول.');
         }
 
+        $oldValues = [
+            'name' => $user->name,
+            'username' => $user->username,
+            'role' => $user->role,
+            'is_active' => $user->is_active,
+        ];
+
         $userData = [
             'name' => $request->name,
             'username' => $request->username,
@@ -85,6 +104,22 @@ class UserController extends Controller
 
         $user->update($userData);
 
+        $newValues = [
+            'name' => $user->name,
+            'username' => $user->username,
+            'role' => $user->role,
+            'is_active' => $user->is_active,
+            'password_changed' => $request->filled('password'),
+        ];
+
+        \App\Services\ActivityLogService::log(
+            action: 'user_updated',
+            subject: $user,
+            description: "تم تحديث بيانات المستخدم: {$user->name} ({$user->username})." . ($request->filled('password') ? ' (تم تغيير كلمة المرور)' : ''),
+            oldValues: $oldValues,
+            newValues: $newValues
+        );
+
         return redirect()->route('users.index')->with('success', 'تم تحديث بيانات المستخدم بنجاح.');
     }
 
@@ -94,8 +129,19 @@ class UserController extends Controller
             return back()->with('error', 'لا يمكنك تغيير حالة حسابك الحالي.');
         }
 
+        $oldStatus = $user->is_active;
         $user->is_active = ! $user->is_active;
         $user->save();
+
+        \App\Services\ActivityLogService::log(
+            action: 'user_status_toggled',
+            subject: $user,
+            description: $user->is_active
+                ? "تم تفعيل حساب المستخدم: {$user->name} ({$user->username})."
+                : "تم تعطيل حساب المستخدم: {$user->name} ({$user->username}).",
+            oldValues: ['is_active' => $oldStatus],
+            newValues: ['is_active' => $user->is_active]
+        );
 
         $message = $user->is_active ? 'تم تفعيل حساب المستخدم بنجاح.' : 'تم تعطيل حساب المستخدم بنجاح.';
 
@@ -108,7 +154,21 @@ class UserController extends Controller
             return back()->with('error', 'لا يمكنك حذف حسابك الحالي.');
         }
 
+        $oldValues = [
+            'name' => $user->name,
+            'username' => $user->username,
+            'role' => $user->role,
+            'is_active' => $user->is_active,
+        ];
+
         $user->delete();
+
+        \App\Services\ActivityLogService::log(
+            action: 'user_deleted',
+            subject: $user,
+            description: "تم حذف حساب المستخدم: {$user->name} ({$user->username}) مع الحفاظ على السجلات المالية والتاريخية.",
+            oldValues: $oldValues
+        );
 
         return redirect()->route('users.index')->with('success', 'تم حذف حساب المستخدم بنجاح مع الحفاظ على السجلات المالية والتاريخية.');
     }

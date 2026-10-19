@@ -63,13 +63,28 @@ class ShiftService
                 ]);
             }
 
-            return Shift::create([
+            $shift = Shift::create([
                 'user_id' => $userId,
                 'opened_at' => now(),
                 'opening_cash' => round($openingCash, 2),
                 'status' => 'open',
                 'notes' => $notes,
             ]);
+
+            \App\Services\ActivityLogService::log(
+                action: 'shift_opened',
+                subject: $shift,
+                description: "تم فتح وردية عمل جديدة رقم #{$shift->id} بعهدة نقدية أولية قدرها {$shift->opening_cash} ج.م.",
+                newValues: [
+                    'shift_id' => $shift->id,
+                    'opening_cash' => (float) $shift->opening_cash,
+                    'opened_at' => $shift->opened_at->toDateTimeString(),
+                    'notes' => $shift->notes,
+                ],
+                userId: $userId
+            );
+
+            return $shift;
         });
     }
 
@@ -112,6 +127,11 @@ class ShiftService
                     : $notes;
             }
 
+            $oldValues = [
+                'status' => 'open',
+                'opening_cash' => (float) $lockedShift->opening_cash,
+            ];
+
             $lockedShift->update([
                 'closed_at' => now(),
                 'closing_cash' => round($actualClosingCash, 2),
@@ -120,6 +140,21 @@ class ShiftService
                 'status' => 'closed',
                 'notes' => $mergedNotes,
             ]);
+
+            \App\Services\ActivityLogService::log(
+                action: 'shift_closed',
+                subject: $lockedShift,
+                description: "تم إغلاق الوردية رقم #{$lockedShift->id}: النقدية الفعلية {$lockedShift->closing_cash} ج.م، المتوقعة {$lockedShift->expected_cash} ج.م، الفارق: {$lockedShift->difference} ج.م.",
+                oldValues: $oldValues,
+                newValues: [
+                    'status' => 'closed',
+                    'closing_cash' => (float) $lockedShift->closing_cash,
+                    'expected_cash' => (float) $lockedShift->expected_cash,
+                    'difference' => (float) $lockedShift->difference,
+                    'closed_at' => $lockedShift->closed_at->toDateTimeString(),
+                ],
+                userId: auth()->id() ?? $lockedShift->user_id
+            );
 
             return $lockedShift;
         });

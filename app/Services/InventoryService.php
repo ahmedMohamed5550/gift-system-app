@@ -136,13 +136,34 @@ class InventoryService
                 $quantityChange = ($direction === 'subtract') ? -$value : $value;
             }
 
-            return $this->recordMovement(
+            $movement = $this->recordMovement(
                 product: $lockedProduct,
                 quantity: $quantityChange,
                 referenceType: 'adjustment',
                 userId: $userId,
                 notes: $reason
             );
+
+            $newStock = (float) $lockedProduct->fresh()->stock_quantity;
+
+            \App\Services\ActivityLogService::log(
+                action: 'stock_adjusted',
+                subject: $lockedProduct,
+                description: "تسوية مخزنية يدوية للمنتج \"{$lockedProduct->name}\": تعديل الرصيد من {$currentStock} إلى {$newStock} (الفرق: {$quantityChange}، السبب: {$reason}).",
+                oldValues: [
+                    'stock_quantity' => $currentStock,
+                ],
+                newValues: [
+                    'stock_quantity' => $newStock,
+                    'quantity_change' => (float) $quantityChange,
+                    'adjustment_mode' => $adjustmentMode,
+                    'movement_id' => $movement->id,
+                    'reason' => $reason,
+                ],
+                userId: $userId
+            );
+
+            return $movement;
         });
     }
 

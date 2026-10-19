@@ -129,7 +129,7 @@
 										</form>
 
 										<div class="main-signin-footer mt-5 text-center text-muted tx-13">
-											<p class="mb-0">نظام إدارة نقطة البيع والمخزون &copy; {{ date('Y') }}</p>
+											<p class="mb-0">نظام إدارة نقطة البيع والمخزون &copy; 2026 Ahmed Abd El-Baky - جميع الحقوق محفوظة</p>
 										</div>
 									</div>
 								</div>
