@@ -140,7 +140,7 @@
 		<div class="card-body p-3">
 			<div class="d-flex flex-wrap justify-content-between align-items-center">
 				<div class="my-1">
-					<span class="tx-12 text-primary font-weight-bold d-block">معادلة النقدية الفعلية المتوقعة بالدرج (Expected Cash):</span>
+					<span class="tx-12 text-primary font-weight-bold d-block">معادلة النقدية الفعلية المتوقعة بالدرج :</span>
 					<span class="tx-13 text-dark">
 						[العهدة الافتتاحية: <strong>{{ number_format($summary['reconciliation']['opening_cash'], 2) }}</strong>]
 						+ [المبيعات النقدية: <strong>{{ number_format($summary['reconciliation']['cash_sales'], 2) }}</strong>]

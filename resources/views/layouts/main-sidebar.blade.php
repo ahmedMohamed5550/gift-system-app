@@ -120,6 +120,19 @@
 						</ul>
 					</li>
 
+					<!-- Sales Returns -->
+					<li class="slide {{ request()->routeIs('returns.*') ? 'is-expanded active' : '' }}">
+						<a class="side-menu__item {{ request()->routeIs('returns.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.11 8.53L5.7 7.11C4.8 8.27 4.24 9.61 4.07 11h2.02c.14-.87.49-1.72 1.02-2.47zM6.09 13H4.07c.17 1.39.72 2.73 1.62 3.89l1.41-1.42c-.52-.75-.87-1.59-1.01-2.47zm1.01 5.32c1.16.9 2.51 1.44 3.9 1.61V17.9c-.87-.15-1.71-.49-2.46-1.03L7.1 18.32zM13 4.07V1L8.45 5.55 13 10V6.09c3.37 0 6.09 2.72 6.09 6.09s-2.72 6.09-6.09 6.09v2c4.47 0 8.09-3.62 8.09-8.09S17.47 4.07 13 4.07z"/></svg>
+							<span class="side-menu__label">مرتجعات المبيعات</span>
+							<i class="angle fe fe-chevron-down"></i>
+						</a>
+						<ul class="slide-menu">
+							<li><a class="slide-item {{ request()->routeIs('returns.index') ? 'active' : '' }}" href="{{ route('returns.index') }}">سجل المرتجعات</a></li>
+							<li><a class="slide-item {{ request()->routeIs('returns.create') ? 'active' : '' }}" href="{{ route('returns.create') }}">إرجاع فاتورة مبيعات</a></li>
+						</ul>
+					</li>
+
 					<!-- Shifts & Cash Reconciliation -->
 					<li class="slide {{ request()->routeIs('shifts.*') ? 'is-expanded active' : '' }}">
 						<a class="side-menu__item {{ request()->routeIs('shifts.*') ? 'active' : '' }}" data-toggle="slide" href="{{ url('/#') }}">

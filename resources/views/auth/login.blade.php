@@ -39,8 +39,8 @@
 							<div class="card-sigin">
 								<div class="mb-4 d-flex align-items-center">
 									<a href="{{ route('login') }}" class="d-flex align-items-center">
-										<img src="{{ URL::asset('assets/img/brand/favicon.png') }}" class="sign-favicon ml-2" alt="شعار متجر الهدايا">
-										<h1 class="login-system-title">بيت <span>الهدايا</span></h1>
+										{{-- <img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="sign-favicon ml-2" alt="شعار متجر بيت الهدايا"> --}}
+										{{-- <h1 class="login-system-title">متجر بيت <span>الهدايا</span></h1> --}}
 									</a>
 								</div>
 

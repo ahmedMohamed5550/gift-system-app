@@ -89,6 +89,8 @@ class SaleController extends Controller
             'user',
             'shift.user',
             'items.product.subcategory',
+            'returns.items.product',
+            'returns.user',
             'activityLogs.user',
         ]);
 

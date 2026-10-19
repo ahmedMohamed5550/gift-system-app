@@ -15,12 +15,15 @@
 			<i class="fas fa-print ml-1"></i> طباعة الإيصال
 		</a>
 		@if($sale->isCompleted())
+			<a href="{{ route('returns.create', ['invoice' => $sale->invoice_number]) }}" class="btn btn-warning font-weight-bold shadow-sm">
+				<i class="fas fa-undo ml-1"></i> إنشاء مرتجع
+			</a>
 			<button type="button" class="btn btn-outline-danger font-weight-bold" data-toggle="modal" data-target="#cancelSaleModal">
-				<i class="fas fa-ban ml-1"></i> إلغاء الفاتورة واسترجاع المخزون
+				<i class="fas fa-ban ml-1"></i> إلغاء الفاتورة
 			</button>
 		@endif
 		<a href="{{ route('sales.index') }}" class="btn btn-outline-secondary font-weight-bold">
-			<i class="fas fa-arrow-right ml-1"></i> العودة لقائمة الفواتير
+			<i class="fas fa-arrow-right ml-1"></i> العودة للفواتير
 		</a>
 	</div>
 </div>
@@ -145,6 +148,48 @@
 				</div>
 			</div>
 		</div>
+
+		@if($sale->returns && $sale->returns->isNotEmpty())
+			<div class="card mb-3 border-warning">
+				<div class="card-header pb-0 bg-warning-transparent d-flex justify-content-between align-items-center">
+					<h6 class="card-title mb-0 font-weight-bold text-dark">
+						<i class="fas fa-undo ml-1 text-warning"></i> إشعارات المرتجعات المسجلة لهذه الفاتورة ({{ $sale->returns->count() }})
+					</h6>
+				</div>
+				<div class="card-body p-0">
+					<div class="table-responsive">
+						<table class="table table-sm table-striped text-center align-middle mb-0 tx-12">
+							<thead class="thead-light">
+								<tr>
+									<th>رقم المرتجع</th>
+									<th>التاريخ</th>
+									<th>طريقة الاسترداد</th>
+									<th>المبلغ المسترد</th>
+									<th>الحالة</th>
+									<th>الإجراءات</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($sale->returns as $ret)
+									<tr>
+										<td class="font-weight-bold">
+											<a href="{{ route('returns.show', $ret) }}" class="text-primary">{{ $ret->return_number }}</a>
+										</td>
+										<td>{{ $ret->created_at->format('Y-m-d g:i A') }}</td>
+										<td><span class="badge {{ $ret->refund_method_badge_class }}">{{ $ret->refund_method_label }}</span></td>
+										<td class="text-danger font-weight-bold">-{{ number_format($ret->total_amount, 2) }} جنيه</td>
+										<td><span class="badge {{ $ret->status_badge_class }}">{{ $ret->status_label }}</span></td>
+										<td>
+											<a href="{{ route('returns.show', $ret) }}" class="btn btn-xs btn-info"><i class="fas fa-eye"></i> عرض</a>
+										</td>
+									</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		@endif
 	</div>
 
 	<!-- Right Side: Invoice Meta & Audit Trail (4 Cols) -->

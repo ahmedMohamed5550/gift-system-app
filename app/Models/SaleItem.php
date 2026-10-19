@@ -46,4 +46,16 @@ class SaleItem extends Model
     {
         return (float) round((($this->unit_price - $this->unit_cost) * $this->quantity), 2);
     }
+
+    public function getReturnedQuantityAttribute(): float
+    {
+        return (float) ($this->returnItems()
+            ->whereHas('saleReturn', fn($q) => $q->where('status', 'approved'))
+            ->sum('quantity') ?? 0);
+    }
+
+    public function getReturnableQuantityAttribute(): float
+    {
+        return (float) max(0, round((float) $this->quantity - $this->returned_quantity, 3));
+    }
 }

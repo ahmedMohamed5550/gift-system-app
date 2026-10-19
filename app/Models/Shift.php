@@ -144,13 +144,19 @@ class Shift extends Model
     }
 
     /**
-     * Cash refunds: approved returns associated with cash sales.
+     * Cash refunds: approved returns where refund was paid in cash.
      */
     public function getCashReturnsTotalAttribute(): float
     {
         return (float) ($this->returns()
             ->where('status', 'approved')
-            ->whereHas('sale', fn($q) => $q->where('payment_method', 'cash'))
+            ->where(function ($q) {
+                $q->where('refund_method', 'cash')
+                    ->orWhere(function ($q2) {
+                        $q2->whereNull('refund_method')
+                            ->whereHas('sale', fn($s) => $s->where('payment_method', 'cash'));
+                    });
+            })
             ->sum('total_amount') ?? 0);
     }
 

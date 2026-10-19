@@ -21,18 +21,21 @@ class PosService
 
     /**
      * Generate a unique invoice number.
-     * Format: INV-YYYYMMDD-XXXX
      */
     public function generateUniqueInvoiceNumber(): string
     {
-        $prefix = 'INV-' . now()->format('Ymd') . '-';
+        return DB::transaction(function () {
+            $today = now()->toDateString();
 
-        do {
-            $random = strtoupper(Str::random(4));
-            $invoiceNumber = $prefix . $random;
-        } while (Sale::where('invoice_number', $invoiceNumber)->exists());
+            $last = Sale::whereDate('created_at', $today)
+                ->where('invoice_number', 'like', 'INV-GF-%')
+                ->lockForUpdate()
+                ->get(['invoice_number'])
+                ->map(fn ($sale) => (int) str_replace('INV-GF-', '', $sale->invoice_number))
+                ->max();
 
-        return $invoiceNumber;
+            return 'INV-GF-' . (($last ?? 0) + 1);
+        });
     }
 
     /**

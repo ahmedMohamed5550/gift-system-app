@@ -7,6 +7,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SubcategoryController;
@@ -72,6 +73,15 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('sales/{sale}/print', [SaleController::class, 'print'])->name('sales.print');
     Route::patch('sales/{sale}/cancel', [SaleController::class, 'cancel'])->name('sales.cancel');
     Route::get('sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+
+    // 9. Returns Management Routes
+    Route::get('returns', [ReturnController::class, 'index'])->name('returns.index');
+    Route::get('returns/create', [ReturnController::class, 'create'])->name('returns.create');
+    Route::post('returns', [ReturnController::class, 'store'])->name('returns.store');
+    Route::get('returns/search-invoice', [ReturnController::class, 'searchInvoice'])->name('returns.search-invoice');
+    Route::get('returns/{return}/print', [ReturnController::class, 'print'])->name('returns.print');
+    Route::patch('returns/{return}/cancel', [ReturnController::class, 'cancel'])->name('returns.cancel');
+    Route::get('returns/{return}', [ReturnController::class, 'show'])->name('returns.show');
 });
 
 // Authentication routes (login, logout, password)

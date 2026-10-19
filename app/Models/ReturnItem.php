@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReturnItem extends Model
 {
+    protected $table = 'return_items';
+
     protected $fillable = [
         'return_id',
         'sale_item_id',
@@ -32,11 +34,11 @@ class ReturnItem extends Model
 
     public function saleItem(): BelongsTo
     {
-        return $this->belongsTo(SaleItem::class);
+        return $this->belongsTo(SaleItem::class, 'sale_item_id');
     }
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }
