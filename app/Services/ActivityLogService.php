@@ -36,6 +36,11 @@ class ActivityLogService
 
         'shift_opened' => 'فتح وردية عمل جديدة',
         'shift_closed' => 'إغلاق وردية ومطابقة النقدية',
+
+        'note_created' => 'تسجيل ملاحظة جديدة',
+        'note_updated' => 'تعديل بيانات ملاحظة',
+        'note_completed' => 'تحديد ملاحظة كمكتملة',
+        'note_cancelled' => 'إلغاء ملاحظة',
     ];
 
     /**

@@ -45,9 +45,12 @@
 							<div class="card card-invoice">
 								<div class="card-body">
 									<div class="invoice-header">
-										<h1 class="invoice-title">Invoice</h1>
+										<a class="desktop-logo logo-light active d-block mb-3" href="{{ route('dashboard') }}">
+											<img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo" alt="logo" style="max-height: 65px; object-fit: contain;">
+										</a>
+										<h1 class="invoice-title">فاتورة مبيعات</h1>
 										<div class="billed-from">
-											<h6>BootstrapDash, Inc.</h6>
+											<h6>متجر بيت الهدايا - Gift House POS</h6>
 											<p>201 Something St., Something Town, YT 242, Country 6546<br>
 											Tel No: 324 445-4544<br>
 											Email: youremail@companyname.com</p>

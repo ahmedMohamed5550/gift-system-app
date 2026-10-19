@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -100,6 +101,11 @@ Route::middleware(['auth', 'active'])->group(function () {
     // 11. Activity & Audit Logs Routes (Strictly Read-Only)
     Route::get('activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
     Route::get('activity-logs/{activityLog}', [\App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity-logs.show');
+
+    // 12. General Notes Management Routes
+    Route::patch('notes/{note}/complete', [NoteController::class, 'complete'])->name('notes.complete');
+    Route::patch('notes/{note}/cancel', [NoteController::class, 'cancel'])->name('notes.cancel');
+    Route::resource('notes', NoteController::class);
 });
 
 // Authentication routes (login, logout, password)

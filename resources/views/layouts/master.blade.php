@@ -22,6 +22,12 @@
 			@include('layouts.main-header')			
 			<!-- container -->
 			<div class="container-fluid">
+				<!-- Print Only Header -->
+				<div class="d-none d-print-block text-center py-2 mb-3 print-only-header">
+					<a class="desktop-logo logo-light active d-inline-block" href="{{ route('dashboard') }}">
+						<img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo" alt="logo" style="max-height: 65px; width: auto; object-fit: contain;">
+					</a>
+				</div>
 				@yield('page-header')
 				@yield('content')
 				@include('layouts.sidebar')

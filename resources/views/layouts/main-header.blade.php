@@ -3,10 +3,10 @@
 				<div class="container-fluid">
 					<div class="main-header-left ">
 						<div class="responsive-logo">
-							<a href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/logo.png')}}" class="logo-1" alt="logo"></a>
-							<a href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/logo-white.png')}}" class="dark-logo-1" alt="logo"></a>
-							<a href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/favicon.png')}}" class="logo-2" alt="logo"></a>
-							<a href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/favicon.png')}}" class="dark-logo-2" alt="logo"></a>
+							<a class="desktop-logo logo-light active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo logo-1" alt="logo"></a>
+							<a class="desktop-logo logo-dark active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo dark-logo-1" alt="logo"></a>
+							<a class="logo-icon mobile-logo icon-light active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="logo-icon logo-2" alt="logo"></a>
+							<a class="logo-icon mobile-logo icon-dark active" href="{{ route('dashboard') }}"><img src="{{URL::asset('assets/img/brand/mini_logo.jpg')}}" class="logo-icon dark-logo-2" alt="logo"></a>
 						</div>
 						<div class="app-sidebar__toggle" data-toggle="sidebar">
 							<a class="open-toggle" href="#"><i class="header-icon fe fe-align-left" ></i></a>

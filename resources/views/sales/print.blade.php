@@ -60,6 +60,9 @@
 	<div class="receipt-container">
 		<!-- Store Header -->
 		<div class="text-center mb-2">
+			<a class="desktop-logo logo-light active d-block mb-2" href="{{ route('dashboard') }}">
+				<img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo" alt="logo" style="max-height: 60px; max-width: 180px; object-fit: contain; margin: 0 auto;">
+			</a>
 			<h4 class="font-weight-bold mb-1">متجر بيت الهدايا</h4>
 			<p class="text-muted tx-12 mb-1">Gift Shop POS System</p>
 			<div class="dashed-divider"></div>

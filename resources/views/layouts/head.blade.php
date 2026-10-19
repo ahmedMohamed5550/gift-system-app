@@ -17,3 +17,38 @@
 <link href="{{URL::asset('assets/css-rtl/style-dark.css')}}" rel="stylesheet">
 <!---Skinmodes css-->
 <link href="{{URL::asset('assets/css-rtl/skin-modes.css')}}" rel="stylesheet">
+
+<!--- Print CSS --->
+<style>
+@media print {
+	.app-sidebar,
+	.main-header,
+	.main-header-right,
+	.app-sidebar__toggle,
+	.breadcrumb-header .right-content,
+	.btn,
+	.no-print,
+	#global-loader {
+		display: none !important;
+	}
+
+	.main-content {
+		margin-right: 0 !important;
+		padding-top: 0 !important;
+	}
+
+	.print-only-header {
+		display: block !important;
+		text-align: center !important;
+		margin-bottom: 20px !important;
+		padding-bottom: 12px !important;
+		border-bottom: 2px dashed #bbb !important;
+	}
+
+	.print-only-header img {
+		max-height: 65px !important;
+		width: auto !important;
+		display: inline-block !important;
+	}
+}
+</style>

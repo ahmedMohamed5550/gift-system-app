@@ -32,6 +32,9 @@
 <body>
 	<div class="receipt-container">
 		<div class="text-center mb-3">
+			<a class="desktop-logo logo-light active d-block mb-2" href="{{ route('dashboard') }}">
+				<img src="{{URL::asset('assets/img/brand/gift_house_logo.jpg')}}" class="main-logo" alt="logo" style="max-height: 65px; max-width: 200px; object-fit: contain; margin: 0 auto;">
+			</a>
 			<h3 class="font-weight-bold mb-1">متجر الهدايا (Gift Shop POS)</h3>
 			<h5 class="text-muted">تقرير إغلاق وتسوية وردية العمل</h5>
 			<span class="badge badge-dark tx-14 px-3 py-1">وردية رقم #{{ $shift->id }}</span>
