@@ -84,27 +84,32 @@
 					</div>
 
 					<!-- Adjustment Mode Selection -->
+					@php
+						$oldMode = old('adjustment_mode', 'relative');
+						$oldDir = old('direction', 'add');
+						$initialRadio = ($oldMode === 'absolute') ? 'absolute' : (($oldDir === 'subtract') ? 'subtract' : 'add');
+					@endphp
 					<div class="form-group text-right">
 						<label class="font-weight-semibold d-block">نوع التسوية <span class="text-danger">*</span></label>
-						<div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-							<label class="btn btn-outline-success font-weight-bold active" id="modeAddLabel">
-								<input type="radio" name="adjustment_mode_radio" value="add" checked>
+						<div class="btn-group btn-group-toggle w-100" id="adjustmentModeBtnGroup">
+							<label class="btn btn-outline-success font-weight-bold {{ $initialRadio === 'add' ? 'active' : '' }}" id="modeAddLabel" style="cursor: pointer;">
+								<input type="radio" name="adjustment_mode_radio" value="add" {{ $initialRadio === 'add' ? 'checked' : '' }} style="position: absolute; clip: rect(0,0,0,0); pointer-events: none;">
 								<i class="fas fa-plus-circle ml-1"></i> إضافة للمخزون (+)
 							</label>
-							<label class="btn btn-outline-danger font-weight-bold" id="modeSubtractLabel">
-								<input type="radio" name="adjustment_mode_radio" value="subtract">
+							<label class="btn btn-outline-danger font-weight-bold {{ $initialRadio === 'subtract' ? 'active' : '' }}" id="modeSubtractLabel" style="cursor: pointer;">
+								<input type="radio" name="adjustment_mode_radio" value="subtract" {{ $initialRadio === 'subtract' ? 'checked' : '' }} style="position: absolute; clip: rect(0,0,0,0); pointer-events: none;">
 								<i class="fas fa-minus-circle ml-1"></i> خصم من المخزون (-)
 							</label>
-							<label class="btn btn-outline-primary font-weight-bold" id="modeAbsoluteLabel">
-								<input type="radio" name="adjustment_mode_radio" value="absolute">
+							<label class="btn btn-outline-primary font-weight-bold {{ $initialRadio === 'absolute' ? 'active' : '' }}" id="modeAbsoluteLabel" style="cursor: pointer;">
+								<input type="radio" name="adjustment_mode_radio" value="absolute" {{ $initialRadio === 'absolute' ? 'checked' : '' }} style="position: absolute; clip: rect(0,0,0,0); pointer-events: none;">
 								<i class="fas fa-clipboard-check ml-1"></i> جرد فعلي (تعديل للرصيد الفعلي)
 							</label>
 						</div>
 					</div>
 
 					<!-- Hidden Real Form Fields for Mode & Direction -->
-					<input type="hidden" name="adjustment_mode" id="adjustment_mode" value="{{ old('adjustment_mode', 'relative') }}">
-					<input type="hidden" name="direction" id="direction" value="{{ old('direction', 'add') }}">
+					<input type="hidden" name="adjustment_mode" id="adjustment_mode" value="{{ $oldMode }}">
+					<input type="hidden" name="direction" id="direction" value="{{ $oldDir }}">
 
 					<!-- Quantity Inputs (Toggled based on mode) -->
 					<div id="relativeQuantityGroup" class="form-group text-right">
@@ -202,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	const bannerMin = document.getElementById('bannerMinStock');
 	const bannerCost = document.getElementById('bannerCostPrice');
 
-	const modeRadioButtons = document.querySelectorAll('input[name="adjustment_mode_radio"]');
 	const modeHidden = document.getElementById('adjustment_mode');
 	const dirHidden = document.getElementById('direction');
 
@@ -215,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const expectedStockBadge = document.getElementById('expectedStockBadge');
 	const deltaStockBadge = document.getElementById('deltaStockBadge');
 	const reasonTextarea = document.getElementById('reason');
+	const adjustmentForm = document.getElementById('adjustmentForm');
 
 	function updateProductBanner() {
 		const selected = productSelect.options[productSelect.selectedIndex];
@@ -233,18 +238,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		calculateExpectedStock();
 	}
 
-	function handleModeChange() {
-		const activeRadio = document.querySelector('input[name="adjustment_mode_radio"]:checked');
-		if (!activeRadio) return;
-
-		const val = activeRadio.value;
-		if (val === 'add') {
-			modeHidden.value = 'relative';
-			dirHidden.value = 'add';
-			relativeGroup.classList.remove('d-none');
-			absoluteGroup.classList.add('d-none');
-			quantityLabel.innerHTML = 'كمية الإضافة للمخزون <span class="text-danger">*</span>';
-		} else if (val === 'subtract') {
+	function setAdjustmentMode(val) {
+		if (val === 'subtract') {
 			modeHidden.value = 'relative';
 			dirHidden.value = 'subtract';
 			relativeGroup.classList.remove('d-none');
@@ -255,7 +250,26 @@ document.addEventListener('DOMContentLoaded', function () {
 			dirHidden.value = '';
 			relativeGroup.classList.add('d-none');
 			absoluteGroup.classList.remove('d-none');
+		} else {
+			// default: 'add'
+			val = 'add';
+			modeHidden.value = 'relative';
+			dirHidden.value = 'add';
+			relativeGroup.classList.remove('d-none');
+			absoluteGroup.classList.add('d-none');
+			quantityLabel.innerHTML = 'كمية الإضافة للمخزون <span class="text-danger">*</span>';
 		}
+
+		// Update active classes on buttons
+		document.getElementById('modeAddLabel').classList.toggle('active', val === 'add');
+		document.getElementById('modeSubtractLabel').classList.toggle('active', val === 'subtract');
+		document.getElementById('modeAbsoluteLabel').classList.toggle('active', val === 'absolute');
+
+		// Sync radio inputs
+		document.querySelectorAll('input[name="adjustment_mode_radio"]').forEach(r => {
+			r.checked = (r.value === val);
+		});
+
 		calculateExpectedStock();
 	}
 
@@ -270,12 +284,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (mode === 'relative') {
 			const qty = parseFloat(quantityInput.value || 0);
-			if (dir === 'add') {
-				delta = qty;
-				expected = currentStock + qty;
-			} else {
+			if (dir === 'subtract') {
 				delta = -qty;
 				expected = currentStock - qty;
+			} else {
+				delta = qty;
+				expected = currentStock + qty;
 			}
 		} else {
 			const counted = parseFloat(countedInput.value || 0);
@@ -298,26 +312,106 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (expected < 0) {
 			expectedStockBadge.className = 'mb-0 font-weight-bold text-danger';
+			deltaStockBadge.textContent += ' ⚠️ (تجاوز الرصيد المتوفر)';
 		} else {
 			expectedStockBadge.className = 'mb-0 font-weight-bold text-dark';
 		}
 	}
 
+	// Button Click Handlers
+	document.getElementById('modeAddLabel').addEventListener('click', function (e) {
+		e.preventDefault();
+		setAdjustmentMode('add');
+	});
+	document.getElementById('modeSubtractLabel').addEventListener('click', function (e) {
+		e.preventDefault();
+		setAdjustmentMode('subtract');
+	});
+	document.getElementById('modeAbsoluteLabel').addEventListener('click', function (e) {
+		e.preventDefault();
+		setAdjustmentMode('absolute');
+	});
+
+	// Radio Change Fallback
+	document.querySelectorAll('input[name="adjustment_mode_radio"]').forEach(r => {
+		r.addEventListener('change', function () {
+			setAdjustmentMode(this.value);
+		});
+	});
+
+	// jQuery integration for Bootstrap/Select2
+	if (window.jQuery) {
+		jQuery('#modeAddLabel').on('click', function (e) { e.preventDefault(); setAdjustmentMode('add'); });
+		jQuery('#modeSubtractLabel').on('click', function (e) { e.preventDefault(); setAdjustmentMode('subtract'); });
+		jQuery('#modeAbsoluteLabel').on('click', function (e) { e.preventDefault(); setAdjustmentMode('absolute'); });
+		jQuery('input[name="adjustment_mode_radio"]').on('change', function () { setAdjustmentMode(this.value); });
+		jQuery('#product_id').on('change select2:select', function () { updateProductBanner(); });
+	}
+
 	productSelect.addEventListener('change', updateProductBanner);
-	modeRadioButtons.forEach(r => r.addEventListener('change', handleModeChange));
-	quantityInput.addEventListener('input', calculateExpectedStock);
-	countedInput.addEventListener('input', calculateExpectedStock);
+
+	['input', 'change', 'keyup'].forEach(evt => {
+		quantityInput.addEventListener(evt, calculateExpectedStock);
+		countedInput.addEventListener(evt, calculateExpectedStock);
+	});
 
 	// Preset reason buttons
 	document.querySelectorAll('.preset-reason').forEach(btn => {
-		btn.addEventListener('click', function () {
+		btn.addEventListener('click', function (e) {
+			e.preventDefault();
 			reasonTextarea.value = this.textContent.trim();
 		});
 	});
 
+	// Client-side Validation Before Submit
+	if (adjustmentForm) {
+		adjustmentForm.addEventListener('submit', function (e) {
+			const selected = productSelect.options[productSelect.selectedIndex];
+			if (!selected || !selected.value) {
+				e.preventDefault();
+				alert('يرجى اختيار المنتج أولاً.');
+				return;
+			}
+
+			const currentStock = parseFloat(selected.dataset.stock || 0);
+			const mode = modeHidden.value;
+			const dir = dirHidden.value;
+
+			if (mode === 'relative') {
+				const qty = parseFloat(quantityInput.value || 0);
+				if (isNaN(qty) || qty <= 0) {
+					e.preventDefault();
+					alert('يرجى إدخال كمية تسوية صحيحة أكبر من الصفر.');
+					quantityInput.focus();
+					return;
+				}
+				if (dir === 'subtract' && qty > currentStock) {
+					e.preventDefault();
+					alert('تنبيه: الكمية المراد خصمها (' + qty + ') تتجاوز الرصيد المتوفر حالياً بالمخزن (' + currentStock + '). لا يمكن أن يصبح رصيد المخزون سالباً.');
+					quantityInput.focus();
+					return;
+				}
+			} else if (mode === 'absolute') {
+				const counted = parseFloat(countedInput.value);
+				if (isNaN(counted) || counted < 0) {
+					e.preventDefault();
+					alert('يرجى إدخال الرصيد الفعلي بعد الجرد بشكل صحيح (صفر أو أكثر).');
+					countedInput.focus();
+					return;
+				}
+				if (counted === currentStock) {
+					e.preventDefault();
+					alert('الرصيد الفعلي المدخل (' + counted + ') مطابق تماماً للرصيد المسجل بالنظام، لا توجد تسوية لازمة.');
+					countedInput.focus();
+					return;
+				}
+			}
+		});
+	}
+
 	// Initialize on page load
 	updateProductBanner();
-	handleModeChange();
+	setAdjustmentMode('{{ $initialRadio }}');
 });
 </script>
 @endsection
