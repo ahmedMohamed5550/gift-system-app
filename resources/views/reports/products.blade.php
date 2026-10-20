@@ -83,7 +83,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card bg-primary-gradient">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white">صافي القطع المباعة (Net Qty)</h6>
+				<h6 class="mb-2 tx-12 text-white">صافي القطع المباعة</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ rtrim(rtrim(number_format($summary['total_net_qty'], 3), '0'), '.') }} قطعة</h3>
 				<p class="mb-0 tx-12 text-white op-8">مباع: {{ rtrim(rtrim(number_format($summary['total_qty_sold'], 3), '0'), '.') }} | مرتجع: {{ rtrim(rtrim(number_format($summary['total_qty_returned'], 3), '0'), '.') }}</p>
 			</div>
@@ -105,7 +105,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card bg-danger-gradient">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white">تكلفة البضاعة المباعة (COGS)</h6>
+				<h6 class="mb-2 tx-12 text-white">تكلفة البضاعة المباعة</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($summary['total_net_cost'], 2) }} جنيه</h3>
 				<p class="mb-0 tx-12 text-white op-8">وفق لقطة سعر التكلفة التاريخي</p>
 			</div>
@@ -151,7 +151,7 @@
 							<th>المرتجع</th>
 							<th>صافي القطع</th>
 							<th>صافي الإيراد</th>
-							<th>صافي التكلفة (COGS)</th>
+							<th>صافي التكلفة</th>
 							<th>مجمل الربح</th>
 							<th>هامش الربح %</th>
 						</tr>

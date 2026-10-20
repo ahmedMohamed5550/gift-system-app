@@ -9,7 +9,7 @@
 			<h4 class="content-title mb-0 my-auto text-primary">
 				<i class="fas fa-balance-scale ml-2"></i>تقرير الأرباح والخسائر وقائمة الدخل
 			</h4>
-			<span class="text-muted mt-1 tx-13 mr-2 mb-0">/ الإيرادات، صافي المبيعات، تكلفة البضاعة المباعة (COGS)، المصروفات، وصافي الدخل</span>
+			<span class="text-muted mt-1 tx-13 mr-2 mb-0">/ الإيرادات، صافي المبيعات، تكلفة البضاعة المباعة، المصروفات، وصافي الدخل</span>
 		</div>
 	</div>
 	<div class="d-flex my-xl-auto right-content">
@@ -44,7 +44,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card bg-danger-gradient">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white font-weight-bold">تكلفة البضاعة المباعة (COGS)</h6>
+				<h6 class="mb-2 tx-12 text-white font-weight-bold">تكلفة البضاعة المباعة</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($income_statement['net_cogs'], 2) }} جنيه</h3>
 				<p class="mb-0 tx-12 text-white op-8">محسوبة بلقطة التكلفة التاريخية</p>
 			</div>
@@ -55,7 +55,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card bg-success-gradient">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white font-weight-bold">مجمل الربح التجاري (Gross Profit)</h6>
+				<h6 class="mb-2 tx-12 text-white font-weight-bold">مجمل الربح التجاري</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($income_statement['gross_profit'], 2) }} جنيه</h3>
 				<p class="mb-0 tx-12 text-white op-8">هامش مجمل الربح: {{ $income_statement['gross_profit_margin'] }}%</p>
 			</div>
@@ -66,7 +66,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card {{ $income_statement['net_profit'] >= 0 ? 'bg-warning-gradient' : 'bg-secondary' }}">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white font-weight-bold">صافي الربح / الدخل (Net Profit)</h6>
+				<h6 class="mb-2 tx-12 text-white font-weight-bold">صافي الربح / الدخل</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($income_statement['net_profit'], 2) }} جنيه</h3>
 				<p class="mb-0 tx-12 text-white op-8">صافي الهامش: {{ $income_statement['net_profit_margin'] }}% بعد المصروفات</p>
 			</div>
@@ -80,7 +80,7 @@
 		<div class="card border shadow-sm">
 			<div class="card-header pb-2 bg-light d-flex justify-content-between align-items-center">
 				<h5 class="card-title mb-0 font-weight-bold text-dark">
-					<i class="fas fa-file-invoice ml-1 text-primary"></i> قائمة الدخل الرسمية (Income Statement)
+					<i class="fas fa-file-invoice ml-1 text-primary"></i> قائمة الدخل الرسمية
 				</h5>
 				<span class="badge badge-light border tx-12">{{ $dateRange['label'] }}</span>
 			</div>
@@ -93,7 +93,7 @@
 								<td colspan="2" class="tx-14"><i class="fas fa-angle-left ml-1"></i> 1. الإيرادات التشغيلية والمبيعات:</td>
 							</tr>
 							<tr>
-								<td class="pr-4">إجمالي مبيعات البضاعة (Gross Subtotal)</td>
+								<td class="pr-4">إجمالي مبيعات البضاعة</td>
 								<td class="text-left font-weight-semibold">{{ number_format($income_statement['gross_subtotal'], 2) }} ج.م</td>
 							</tr>
 							<tr>
@@ -101,21 +101,21 @@
 								<td class="text-left text-danger font-weight-semibold">-{{ number_format($income_statement['total_discount'], 2) }} ج.م</td>
 							</tr>
 							<tr class="bg-light">
-								<td class="pr-4 font-weight-bold">(=) إجمالي المبيعات بعد الخصم (Gross Sales)</td>
+								<td class="pr-4 font-weight-bold">(=) إجمالي المبيعات بعد الخصم</td>
 								<td class="text-left font-weight-bold">{{ number_format($income_statement['gross_sales'], 2) }} ج.م</td>
 							</tr>
 							<tr>
-								<td class="pr-4 text-danger">(-) إجمالي المرتجعات المعتمدة (Approved Returns)</td>
+								<td class="pr-4 text-danger">(-) إجمالي المرتجعات المعتمدة</td>
 								<td class="text-left text-danger font-weight-semibold">-{{ number_format($income_statement['total_returns'], 2) }} ج.م</td>
 							</tr>
 							<tr class="bg-primary-transparent font-weight-bold tx-15">
-								<td class="text-primary font-weight-bold">(=) صافي المبيعات والإيرادات (Net Sales)</td>
+								<td class="text-primary font-weight-bold">(=) صافي المبيعات والإيرادات</td>
 								<td class="text-left text-primary font-weight-bold">{{ number_format($income_statement['net_sales'], 2) }} جنيه مصري</td>
 							</tr>
 
 							<!-- 2. COGS Section -->
 							<tr class="table-danger font-weight-bold">
-								<td colspan="2" class="tx-14"><i class="fas fa-angle-left ml-1"></i> 2. تكلفة البضاعة المباعة (Cost of Goods Sold - COGS):</td>
+								<td colspan="2" class="tx-14"><i class="fas fa-angle-left ml-1"></i> 2. تكلفة البضاعة المباعة:</td>
 							</tr>
 							<tr>
 								<td class="pr-4 text-muted">تكلفة الأصناف المباعة (وفق لقطات سعر التكلفة التاريخية)</td>
@@ -126,13 +126,13 @@
 								<td class="text-left text-success font-weight-semibold">-{{ number_format($income_statement['returned_cogs'], 2) }} ج.م</td>
 							</tr>
 							<tr class="bg-light font-weight-bold">
-								<td class="pr-4 font-weight-bold">(=) صافي تكلفة البضاعة المباعة (Net COGS)</td>
+								<td class="pr-4 font-weight-bold">(=) صافي تكلفة البضاعة المباعة</td>
 								<td class="text-left text-danger font-weight-bold">{{ number_format($income_statement['net_cogs'], 2) }} جنيه مصري</td>
 							</tr>
 
 							<!-- 3. Gross Profit -->
 							<tr class="bg-success-transparent font-weight-bold tx-15">
-								<td class="text-success font-weight-bold">(=) مجمل الربح التجاري (Gross Profit)</td>
+								<td class="text-success font-weight-bold">(=) مجمل الربح التجاري</td>
 								<td class="text-left text-success font-weight-bold tx-16">{{ number_format($income_statement['gross_profit'], 2) }} جنيه مصري</td>
 							</tr>
 							<tr class="tx-12 text-muted">
@@ -151,17 +151,17 @@
 								</tr>
 							@endforeach
 							<tr class="bg-light font-weight-bold">
-								<td class="pr-4 font-weight-bold">(=) إجمالي المصروفات التشغيلية (Total Expenses)</td>
+								<td class="pr-4 font-weight-bold">(=) إجمالي المصروفات التشغيلية</td>
 								<td class="text-left text-danger font-weight-bold">-{{ number_format($income_statement['total_expenses'], 2) }} جنيه مصري</td>
 							</tr>
 
 							<!-- 5. Net Profit / Final Result -->
 							<tr class="{{ $income_statement['net_profit'] >= 0 ? 'bg-success text-white' : 'bg-danger text-white' }} font-weight-bold tx-16">
-								<td class="font-weight-bold text-white">(=) صافي الربح / الدخل النهائي (Net Profit)</td>
+								<td class="font-weight-bold text-white">(=) صافي الربح / الدخل النهائي</td>
 								<td class="text-left font-weight-bold text-white tx-18">{{ number_format($income_statement['net_profit'], 2) }} جنيه مصري</td>
 							</tr>
 							<tr class="tx-12 font-weight-bold bg-light">
-								<td>نسبة هامش صافي الربح (Net Profit Margin)</td>
+								<td>نسبة هامش صافي الربح</td>
 								<td class="text-left {{ $income_statement['net_profit_margin'] >= 0 ? 'text-success' : 'text-danger' }}">
 									{{ $income_statement['net_profit_margin'] }}%
 								</td>
@@ -179,7 +179,7 @@
 		<div class="card border shadow-sm mb-3">
 			<div class="card-header pb-2 bg-light">
 				<h6 class="card-title mb-0 font-weight-bold text-dark">
-					<i class="fas fa-money-bill-wave ml-1 text-success"></i> حركة النقدية الفعلية بدرج الخزينة (Cash Flow)
+					<i class="fas fa-money-bill-wave ml-1 text-success"></i> حركة النقدية الفعلية بدرج الخزينة
 				</h6>
 			</div>
 			<div class="card-body">
@@ -265,7 +265,7 @@
 							<th>إجمالي المبيعات</th>
 							<th>المرتجعات</th>
 							<th>صافي المبيعات</th>
-							<th>صافي التكلفة (COGS)</th>
+							<th>صافي التكلفة</th>
 							<th>مجمل الربح</th>
 							<th>المصروفات</th>
 							<th>صافي الربح</th>

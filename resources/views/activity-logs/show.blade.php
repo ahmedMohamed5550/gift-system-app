@@ -106,7 +106,7 @@
 					</div>
 
 					<details>
-						<summary class="tx-12 text-muted cursor-pointer mb-2 font-weight-bold">عرض تمثيل JSON الخام</summary>
+						<summary class="tx-12 text-muted cursor-pointer mb-2 font-weight-bold">عرض تمثيل البيانات الخام</summary>
 						<pre class="bg-light p-3 border rounded text-left" style="direction: ltr;"><code>{{ json_encode($activityLog->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
 					</details>
 				@else
@@ -156,7 +156,7 @@
 					</div>
 
 					<details>
-						<summary class="tx-12 text-muted cursor-pointer mb-2 font-weight-bold">عرض تمثيل JSON الخام</summary>
+						<summary class="tx-12 text-muted cursor-pointer mb-2 font-weight-bold">عرض تمثيل البيانات الخام</summary>
 						<pre class="bg-light p-3 border rounded text-left" style="direction: ltr;"><code>{{ json_encode($activityLog->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
 					</details>
 				@else

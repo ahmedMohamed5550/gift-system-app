@@ -81,7 +81,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card bg-primary-gradient">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white">صافي المبيعات (Net Sales)</h6>
+				<h6 class="mb-2 tx-12 text-white">صافي المبيعات</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($summary['net_sales'], 2) }} جنيه</h3>
 				<p class="mb-0 tx-12 text-white op-8">بعد استبعاد المرتجعات المعتمدة</p>
 			</div>
@@ -92,7 +92,7 @@
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card overflow-hidden sales-card bg-success-gradient">
 			<div class="p-3">
-				<h6 class="mb-2 tx-12 text-white">إجمالي المبيعات (Gross)</h6>
+				<h6 class="mb-2 tx-12 text-white">إجمالي المبيعات</h6>
 				<h3 class="tx-22 font-weight-bold mb-1 text-white">{{ number_format($summary['gross_sales'], 2) }} جنيه</h3>
 				<p class="mb-0 tx-12 text-white op-8">الخصومات: {{ number_format($summary['total_discount'], 2) }} جنيه</p>
 			</div>

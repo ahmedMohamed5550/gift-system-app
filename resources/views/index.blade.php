@@ -218,7 +218,7 @@
 							{{ number_format($data['period']['gross_profit'], 2) }} <small class="tx-12">جنيه</small>
 						</h4>
 						<span class="tx-11 text-muted">
-							هامش الربح: <strong class="text-dark">{{ $data['period']['gross_profit_margin'] }}%</strong> (تكلفة COGS: {{ number_format($data['period']['net_cogs'], 2) }})
+							هامش الربح: <strong class="text-dark">{{ $data['period']['gross_profit_margin'] }}%</strong> (التكلفة: {{ number_format($data['period']['net_cogs'], 2) }})
 						</span>
 					</div>
 					<div class="p-2 bg-success-transparent rounded-circle">

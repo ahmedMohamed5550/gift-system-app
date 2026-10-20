@@ -31,14 +31,14 @@
 	</div>
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card bg-success-gradient text-white p-3 shadow-sm">
-			<span class="tx-12 font-weight-bold op-8">مجمل الربح (Gross Profit)</span>
+			<span class="tx-12 font-weight-bold op-8">مجمل الربح</span>
 			<h3 class="font-weight-bold mb-1">{{ number_format($data['period']['gross_profit'], 2) }} جنيه</h3>
 			<small class="op-8">هامش الربح التجاري: {{ $data['period']['gross_profit_margin'] }}%</small>
 		</div>
 	</div>
 	<div class="col-xl-3 col-lg-6 col-12">
 		<div class="card bg-info-gradient text-white p-3 shadow-sm">
-			<span class="tx-12 font-weight-bold op-8">صافي الربح (Net Profit)</span>
+			<span class="tx-12 font-weight-bold op-8">صافي الربح</span>
 			<h3 class="font-weight-bold mb-1">{{ number_format($data['period']['net_profit'], 2) }} جنيه</h3>
 			<small class="op-8">بعد خصم المصروفات ({{ number_format($data['period']['expenses_total'], 2) }} ج.م)</small>
 		</div>
@@ -116,7 +116,7 @@
 						<h5 class="font-weight-bold mb-1">
 							<a href="{{ route('reports.profit') }}" class="text-dark">تقرير الأرباح والخسائر</a>
 						</h5>
-						<span class="text-muted tx-12">قائمة الدخل: الإيرادات، COGS، صافي الربح</span>
+						<span class="text-muted tx-12">قائمة الدخل: الإيرادات، التكلفة، صافي الربح</span>
 					</div>
 				</div>
 				<p class="text-muted tx-13 mb-3">

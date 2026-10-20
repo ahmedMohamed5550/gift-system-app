@@ -31,7 +31,7 @@
 		<div class="card border-success shadow-sm h-100">
 			<div class="card-header bg-success-transparent pb-2 d-flex justify-content-between align-items-center">
 				<h5 class="card-title mb-0 font-weight-bold text-success">
-					<i class="fas fa-money-bill-wave ml-1"></i> النقدية الفعلية بالدرج (Physical Cash)
+					<i class="fas fa-money-bill-wave ml-1"></i> النقدية الفعلية بالدرج
 				</h5>
 				<span class="badge badge-success px-3 py-1 font-weight-bold tx-13">
 					{{ $physical_cash['percentage'] }}% من إجمالي المبيعات

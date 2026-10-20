@@ -124,7 +124,7 @@
 
 				<!-- Action filter -->
 				<div class="col-md-3 col-sm-6 mb-2">
-					<label class="form-label tx-12 font-weight-semibold">نوع العملية (Action):</label>
+					<label class="form-label tx-12 font-weight-semibold">نوع العملية:</label>
 					<select name="action" class="form-control select2">
 						<option value="">-- كافة العمليات --</option>
 						@foreach($actions as $key => $label)
@@ -157,7 +157,7 @@
 
 			<div class="row row-sm mt-1">
 				<div class="col-md-6 col-12">
-					<input type="text" name="search" class="form-control form-control-sm" placeholder="بحث بالوصف، المعرف (ID)، أو اسم العملية..." value="{{ $filters['search'] ?? '' }}">
+					<input type="text" name="search" class="form-control form-control-sm" placeholder="بحث بالوصف، المعرف، أو اسم العملية..." value="{{ $filters['search'] ?? '' }}">
 				</div>
 			</div>
 		</form>
@@ -268,7 +268,7 @@
 
 											<div class="row">
 												<div class="col-md-6 mb-3">
-													<h6 class="font-weight-bold text-danger"><i class="fas fa-undo-alt ml-1"></i> القيم السابقة (Old Values):</h6>
+													<h6 class="font-weight-bold text-danger"><i class="fas fa-undo-alt ml-1"></i> القيم السابقة:</h6>
 													@if(!empty($log->old_values))
 														<pre class="bg-light p-3 border rounded text-left" style="direction: ltr; max-height: 250px; overflow-y: auto;"><code>{{ json_encode($log->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
 													@else
@@ -277,7 +277,7 @@
 												</div>
 
 												<div class="col-md-6 mb-3">
-													<h6 class="font-weight-bold text-success"><i class="fas fa-check-circle ml-1"></i> القيم الجديدة (New Values):</h6>
+													<h6 class="font-weight-bold text-success"><i class="fas fa-check-circle ml-1"></i> القيم الجديدة:</h6>
 													@if(!empty($log->new_values))
 														<pre class="bg-light p-3 border rounded text-left" style="direction: ltr; max-height: 250px; overflow-y: auto;"><code>{{ json_encode($log->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
 													@else
